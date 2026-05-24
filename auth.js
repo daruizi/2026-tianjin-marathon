@@ -6,7 +6,7 @@ const AUTH_CONFIG = {
   // 修改密码: 在浏览器控制台运行 generateHash('新密码') 得到新 hash, 替换下方 PASSWORD_HASH 后 git push
   SALT: '2026-tjm-jerry-static-salt-v1',
   ITERATIONS: 250000,
-  PASSWORD_HASH: '8XNI9aiexxX1gA/LSYgiIM/STEw8kU/PCoGn2p41FFo=',  // 默认: Jerry-TJM-2026-go (立即改!)
+  PASSWORD_HASH: 'NF9elspH2jy5ta3viyVFDk/tDrrnReqjDSBwG/h7YKI=',  // 用户自定义 (2026-05-24 轮换)
   SESSION_KEY: 'shm-auth-token-v1',
   SESSION_TTL_MS: 30 * 24 * 60 * 60 * 1000,  // 30 天免登录
 };
