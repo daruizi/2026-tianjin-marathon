@@ -7,6 +7,12 @@
 <title>2026 天津马拉松训练计划 · sub 2:55</title>
 <link rel="stylesheet" href="styles.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  /* Inline early to prevent FOUC: hide content until authenticated */
+  html[data-auth="locked"] body > *:not(#auth-gate) { visibility: hidden !important; }
+  body[data-auth="locked"] > *:not(#auth-gate) { visibility: hidden !important; }
+</style>
+<script src="auth.js"></script>
 </head>
 <body>
 
@@ -25,6 +31,7 @@
   </nav>
   <div class="actions">
     <button class="icon-btn" id="sync-btn" title="跨设备同步" onclick="openSyncModal()">☁ 同步</button>
+    <button class="icon-btn" id="logout-btn" title="退出登录" onclick="logout()">🔓 退出</button>
     <button class="icon-btn" id="theme-btn" title="切换主题">☾ 深色</button>
     <button class="icon-btn" id="export-btn" title="导出进度">↓ 导出</button>
     <button class="icon-btn" id="reset-btn" title="重置进度">↻ 重置</button>

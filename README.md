@@ -95,6 +95,48 @@ git push -u origin main
 └── .nojekyll        # GitHub Pages 配置 (跳过 Jekyll)
 ```
 
+## 访问控制 (密码门)
+
+应用通过客户端 PBKDF2-SHA256 密码门保护,只有输入正确密码的用户才能看到内容。
+
+### 默认密码
+
+**`Jerry-TJM-2026-go`** ← **强烈建议立即修改!**
+
+### 修改密码 (推荐)
+
+1. 在浏览器打开站点 → 用默认密码登录
+2. 按 F12 打开开发者控制台
+3. 输入 `generateHash('你想用的新密码')` 回车
+4. 复制控制台输出的 Hash 字符串
+5. 编辑 `auth.js` 第 9 行 `PASSWORD_HASH: '...'`, 把 Hash 粘贴进去
+6. `git add auth.js && git commit -m "Update password" && git push`
+7. 1-2 分钟后 GitHub Pages 重新部署, 新密码生效
+
+### 安全说明
+
+⚠️ **客户端鉴权的真实强度**:
+
+- ✅ 可以阻挡 99% 非技术用户
+- ✅ PBKDF2 25 万次迭代防止哈希字典攻击 (强密码极难破解)
+- ✅ 密码不发送任何服务器, 完全本地验证
+- ✅ 30 天免登录 (localStorage) 或会话级 (sessionStorage)
+- ❌ **懂技术的用户可以**:
+  - View source 看到 hash, 但破解需要密码本身
+  - Fork 仓库, 删掉 auth.js 部署自己的副本看代码 (但看不到你的训练数据 — 数据在私人 Gist)
+  - 通过浏览器调试器跳过验证 (但 hash 错就是错, 即使强行跳过也无法获得真实密码)
+
+### 更高级的保护选项 (可选升级)
+
+如客户端密码门不够强:
+
+| 方案 | 强度 | 成本 | 复杂度 |
+|---|---|---|---|
+| GitHub Pro + Private Pages | 完全私有 | $4/月 | 低 |
+| Cloudflare Access (Zero Trust) | 服务端鉴权 | 免费 (需自定义域名 + DNS) | 中 |
+| Vercel/Netlify + Password Protect | 服务端鉴权 | $20/月 | 低 |
+| 内容加密 (Staticrypt) | 内容加密 | 免费 | 中 |
+
 ## 跨设备同步配置
 
 应用使用 **GitHub Gist API** 实现多设备数据同步。所有数据 (进度勾选 + 训练日志) 存在你私人 Gist 中,
