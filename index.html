@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="2026 天津马拉松 22 周训练计划 — sub 2:55 个性化版">
+<title>2026 天津马拉松训练计划 · sub 2:55</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ===== Top bar ===== -->
+<div class="topbar">
+  <div class="brand">2026 天津马拉松训练 <span class="sub">sub 2:55</span></div>
+  <nav>
+    <a href="#focus">本周</a>
+    <a href="#profile">档案</a>
+    <a href="#history">数据回顾</a>
+    <a href="#plan">22 周计划</a>
+    <a href="#log">训练日志</a>
+    <a href="#strength">力量</a>
+    <a href="#race">比赛日</a>
+    <a href="#tools">工具</a>
+  </nav>
+  <div class="actions">
+    <button class="icon-btn" id="sync-btn" title="跨设备同步" onclick="openSyncModal()">☁ 同步</button>
+    <button class="icon-btn" id="theme-btn" title="切换主题">☾ 深色</button>
+    <button class="icon-btn" id="export-btn" title="导出进度">↓ 导出</button>
+    <button class="icon-btn" id="reset-btn" title="重置进度">↻ 重置</button>
+    <button class="icon-btn primary" id="print-btn" title="打印">⎙ 打印</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ===== Hero ===== -->
+  <div class="hero" id="focus">
+    <h1>2026 天津马拉松 · 22 周训练计划 — 目标 <span class="sub">sub 2:55:00</span></h1>
+    <div class="tagline">个性化版 · 比赛日 2026-10-25 (待官方确认) · 基于 4 场全马 FIT 数据 + 132 km/周习惯</div>
+    <div id="hero-content"></div>
+  </div>
+
+  <!-- ===== Focus week ===== -->
+  <div class="focus-week" id="focus-week"></div>
+
+  <!-- ===== Profile ===== -->
+  <section id="profile">
+    <h2>跑者档案</h2>
+    <div class="grid-4" id="profile-grid"></div>
+  </section>
+
+  <!-- ===== History ===== -->
+  <section id="history">
+    <h2>4 场全马数据回顾</h2>
+    <table>
+      <thead><tr><th>赛事</th><th>日期</th><th>成绩</th><th>均配</th><th>均HR</th><th>VI</th><th>后半漂移</th></tr></thead>
+      <tbody id="history-tbody"></tbody>
+    </table>
+    <div class="info">
+      <b>诊断</b>: 18 个月 4 场全马标准差 38 秒 — 性能天花板,不是 PB 偶发。配速控制 elite (VI &lt; 1%),但 35-40km 段从 4:11 退步到 4:16,腿力 + 速度耐力是隐藏短板。
+    </div>
+    <div class="grid-2">
+      <div class="chart-container"><div style="height:300px"><canvas id="chart-history"></canvas></div></div>
+      <div class="chart-container"><div style="height:300px"><canvas id="chart-segments"></canvas></div></div>
+    </div>
+  </section>
+
+  <!-- ===== Plan ===== -->
+  <section id="plan">
+    <h2>22 周训练计划</h2>
+    <div class="chart-container"><div style="height:240px"><canvas id="chart-volume"></canvas></div></div>
+
+    <h3>每周固定 6 天框架</h3>
+    <table>
+      <thead><tr><th>日</th><th>km</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td><b>周一</b></td><td>0</td><td><span class="tag tag-S">力量 #1</span> 下肢主力 + 爆发, 40 min</td></tr>
+        <tr><td><b>周二</b></td><td>19</td><td><span class="tag tag-E">E</span> 真慢 (HR ≤145) + 6×strides</td></tr>
+        <tr><td><b>周三</b></td><td>22</td><td><b>主质量课</b> — <span class="tag tag-T">T</span> 或 <span class="tag tag-I">I</span>, 隔周交替</td></tr>
+        <tr><td><b>周四</b></td><td>19</td><td><span class="tag tag-E">E</span> 真·恢复 (HR ≤140, 配速 5:00+)</td></tr>
+        <tr><td><b>周五</b></td><td>9</td><td><span class="tag tag-E">E</span> + <span class="tag tag-S">力量 #2</span> 单侧 + 髋 + 跟腱, 40 min</td></tr>
+        <tr><td><b>周六</b></td><td>19</td><td><span class="tag tag-E">E</span> 中等 (HR 140-150) + 末段 6×strides, 无强度</td></tr>
+        <tr><td><b>周日</b></td><td>37</td><td><b>长跑 + MP block</b> (block 长度随阶段递增)</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:24px">核心训练原则</h3>
+    <div class="principles">
+      <ol>
+        <li><b>慢就是对的</b> — 周二/四/六的 E 跑必须真·慢 (HR 严格 ≤145, 周四 ≤140)。8 年中等强度陷阱是停滞核心原因。</li>
+        <li><b>质量日不能跑两天连续</b> — 周三和周日中间隔 3 天, 42 岁恢复速度的下限。</li>
+        <li><b>力量训练雷打不动</b> — 35-40km 段退化的唯一解药。每周 2 次, 跑步后做, 绝不省略。</li>
+        <li><b>渐进而非跳跃</b> — W1-W6 T 配速 4:00 起,W7+ 才压到 3:55-3:58。</li>
+        <li><b>cutback 周不可省</b> — 每 3-4 周一次, 整周量降 20-25%。</li>
+        <li><b>MP block 是 sub 2:55 真正密码</b> — 从 W2 的 4km 加到 W22 的 25km, 这是 8 年缺失的特异性。</li>
+        <li><b>有任何关节锐痛立即停跑</b> — 42 岁伤病恢复周期是 30 岁的两倍。</li>
+      </ol>
+    </div>
+
+    <h3 style="margin-top:24px">完整 22 周</h3>
+    <p style="color:var(--muted);font-size:12px">点击行查看每日详情 · 点击 ○ 标记整周完成 · 数据存本地,刷新不丢</p>
+    <div id="weeks-container"></div>
+  </section>
+
+  <!-- ===== Training Log ===== -->
+  <section id="log">
+    <h2>训练日志</h2>
+    <p style="color:var(--muted);font-size:13px">
+      记录每周主课 (周三质量课 + 周日长跑) 的主观感受、实际完成、心得复盘, 便于追踪和复盘。
+      点击 <b>22 周计划</b> 中任意一周的行打开 modal, 在底部填写日志。日志按时间倒序展示在下方时间线。
+    </p>
+    <div id="log-timeline" style="margin-top:14px"></div>
+  </section>
+
+  <!-- ===== Strength ===== -->
+  <section id="strength">
+    <h2>力量训练完整方案</h2>
+    <p style="color:var(--muted);font-size:13px">
+      每周 2 次, 跑步后完成。<b>大重量低次数 (3-5 reps @ RPE 8) + 单腿动作 + 后链 + 髋稳定</b>是 42 岁跑者 PB 提升的核心。
+    </p>
+    <div id="strength-content"></div>
+  </section>
+
+  <!-- ===== Race day ===== -->
+  <section id="race">
+    <h2>比赛日策略 (2026-10-25 · 待官方确认)</h2>
+    <div id="race-strategy"></div>
+
+    <h3 style="margin-top:24px">红线信号</h3>
+    <div class="warn">
+      <b>立即降量信号 (整周量 ↓ 20%, 跳过周三 1 次质量课)</b><br>
+      · 静息心率连续 3 天高于基线 +7 bpm<br>
+      · 任何关节性疼痛持续 48h 不退<br>
+      · 周三 T 课最后一组配速明显掉 (比目标慢 8+ 秒)<br>
+      · 周日长跑 MP 段心率比预期高 10+ bpm
+    </div>
+    <div class="warn">
+      <b>立即停跑信号 (完全休息, 看医生/康复师)</b><br>
+      · 跑步中尖锐疼痛 (非肌肉酸痛) · 跛行/步态改变 · 局部肿胀 + 压痛
+    </div>
+    <div class="ok">
+      <b>正常应该感觉</b><br>
+      · E 跑结束应感觉"还能再来一段" — 没气喘<br>
+      · T 跑最后一组应感觉"舒适地艰难" — comfortably hard<br>
+      · I 跑最后一组应感觉"快崩了但还能完成"<br>
+      · 周日 MP block 最后 1 km 应该是"努力但配速能维持"
+    </div>
+
+    <h3 style="margin-top:24px">关键里程碑</h3>
+    <table>
+      <thead><tr><th>日期</th><th>节点</th><th>意义</th></tr></thead>
+      <tbody id="milestones-tbody"></tbody>
+    </table>
+  </section>
+
+  <!-- ===== Tools ===== -->
+  <section id="tools">
+    <h2>工具</h2>
+    <h3>配速计算器</h3>
+    <p style="color:var(--muted);font-size:13px">输入目标全马时间, 自动算出各强度区间配速</p>
+    <div class="calc-row" id="pace-calc-form">
+      <div>
+        <label>目标时间 (H:MM:SS)</label>
+        <input type="text" id="target-time" value="2:54:30" />
+      </div>
+      <button id="calc-btn">计算</button>
+    </div>
+    <div id="pace-result"></div>
+  </section>
+
+  <footer>
+    生成于 2026-05-24 · 2026 天津马拉松版 · 基于 132 km/周 6 天分布 + 4 场全马 FIT 数据 + Jack Daniels VDOT 系统<br>
+    比赛日期 10-25 为推测值, 官方公告后请更新 data.js 中 RACE_DAY · 数据存于浏览器 localStorage · GitHub Pages 部署见 <a href="README.md">README</a>
+  </footer>
+
+</div>
+
+<!-- ===== Week detail modal ===== -->
+<div class="modal-overlay" id="week-modal">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">×</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="sync.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
