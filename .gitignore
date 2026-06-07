@@ -1,0 +1,10 @@
+# 个人训练原始数据 — 含 GPS 轨迹 / 心率 / 时间, 不上传公开仓库
+Activities/
+
+# 临时分析脚本 / 产物
+__pycache__/
+*.pyc
+parse_fit.py
+analyze_*.py
+speed_probe.py
+*_parsed.json

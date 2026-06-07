@@ -641,27 +641,36 @@ function calculatePaces() {
   const totalSec = parseInt(m[1]) * 3600 + parseInt(m[2]) * 60 + parseInt(m[3]);
   const mp = totalSec / 42.195;  // sec/km
 
-  // Simplified factor-based estimates (relative to MP)
+  // Simplified factor-based estimates (relative to MP) — VDOT 目标
   const e = mp * 1.18;          // ~+18%
   const eSlow = mp * 1.23;
-  const t = mp * 0.95;          // ~-5%
-  const i = mp * 0.87;          // ~-13%
-  const r = mp * 0.83;          // ~-17%
+  const t = mp * 0.95;          // ~-5%  目标 ~3:56
+  const i = mp * 0.87;          // ~-13% 目标 ~3:36
+  const r = mp * 0.83;          // ~-17% 目标 ~3:26
+
+  // 当前起步 (ease-in) — 用户偏好「信心优先」: 先从 4:05 起步, 完全无压力后每次降 5 秒进下一档。
+  // (依据: 5/23 实测 1km 3:55 @ HR158, 上限远高于此; 4:05 是低压力的节奏建立档)
+  const tStart = mp * 0.987;    // ~4:05
+  const iStart = mp * 0.987;    // ~4:05
+  const rStart = mp * 0.927;    // ~3:50
 
   const html = `
     <table>
-      <thead><tr><th>区间</th><th>配速 /km</th><th>说明</th></tr></thead>
+      <thead><tr><th>区间</th><th>当前起步</th><th>目标 (VDOT)</th><th>说明 / HR</th></tr></thead>
       <tbody>
-        <tr><td>E (轻松)</td><td>${secToPace(e)}</td><td>HR ≤145</td></tr>
-        <tr><td>恢复</td><td>${secToPace(eSlow)}</td><td>HR ≤140, 周四</td></tr>
-        <tr><td>M (马配)</td><td><b>${secToPace(mp)}</b></td><td>目标比赛配速</td></tr>
-        <tr><td>T (阈值)</td><td>${secToPace(t)}</td><td>HR 168-175</td></tr>
-        <tr><td>I (间歇)</td><td>${secToPace(i)}</td><td>VO2max</td></tr>
-        <tr><td>R (短距)</td><td>${secToPace(r)}</td><td>200-400m</td></tr>
+        <tr><td>E (轻松)</td><td colspan="2" style="text-align:center">${secToPace(e)}</td><td>HR ≤145</td></tr>
+        <tr><td>恢复</td><td colspan="2" style="text-align:center">${secToPace(eSlow)}</td><td>HR ≤140, 周四 (更慢更短)</td></tr>
+        <tr><td>M (马配)</td><td colspan="2" style="text-align:center"><b>${secToPace(mp)}</b></td><td>目标比赛配速, HR ~160</td></tr>
+        <tr><td>T (阈值)</td><td><b>${secToPace(tStart)}</b></td><td>${secToPace(t)}</td><td>HR 168-175 · 先敢上心率</td></tr>
+        <tr><td>I (间歇)</td><td><b>${secToPace(iStart)}</b></td><td>${secToPace(i)}</td><td>VO2max, HR ~max-5</td></tr>
+        <tr><td>R (短距)</td><td><b>${secToPace(rStart)}</b></td><td>${secToPace(r)}</td><td>200-400m + strides</td></tr>
       </tbody>
     </table>
     <p style="font-size:11px;color:var(--muted);margin-top:8px">
-      估算基于 MP 比例,精确版请用 <a href="https://runsmart.in/calculators/vdot/" target="_blank">VDOT 计算器</a>
+      <b>策略 · 信心优先</b>: 先从<b>当前起步 (4:05)</b> 建立分组跑的节奏,完全无压力后每次降 5 秒
+      (4:05 → 4:00 → 3:55 …) 逐步逼近<b>目标</b>列;到 3:55 往下,心率会自然进 168+。
+      (依据 5/23 实测: 1km 3:55 @ HR158, 上限远高于 4:00) · 精确版可用
+      <a href="https://runsmart.in/calculators/vdot/" target="_blank">VDOT 计算器</a>
     </p>
   `;
   document.getElementById('pace-result').innerHTML = html;
