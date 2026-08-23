@@ -48,6 +48,10 @@ function getCurrentWeek() {
   const wk = Math.floor(diff / (7 * 24 * 60 * 60 * 1000)) + 1;
   return Math.min(wk, 28);
 }
+// 当周若定义了 days: [周一..周日] 则覆盖 WEEK_FRAME 的默认 km (W14 起的 v2 计划逐周指定)
+function dayKm(frameDay, i, wk) {
+  return (wk && Array.isArray(wk.days) && wk.days[i] != null) ? wk.days[i] : frameDay.km;
+}
 function paceToSec(str) {
   const m = str.match(/(\d+):(\d{2})/);
   return m ? parseInt(m[1]) * 60 + parseInt(m[2]) : null;
@@ -139,7 +143,7 @@ function renderFocusWeek() {
       <div class="focus-day ${done ? 'done' : ''}" data-key="${key}" onclick="toggleDay('${key}')">
         <span class="check"></span>
         <div class="day-name">${d.day} ${fmtDate(dayDate)}</div>
-        <div class="day-km">${d.km} km</div>
+        <div class="day-km">${dayKm(d, i, wk)} km</div>
         <div style="font-size:11px;margin-top:4px;line-height:1.4">${detail}</div>
       </div>
     `;
@@ -430,7 +434,7 @@ function openWeekModal(wkNum) {
             <input type="checkbox" ${progress[key] ? 'checked' : ''} onchange="toggleDay('${key}')">
             ${d.day} · ${fmtDate(dayDate)}
           </span>
-          <span class="day-km">${d.km} km</span>
+          <span class="day-km">${dayKm(d, i, wk)} km</span>
         </div>
         <div>${detail}</div>
       </div>

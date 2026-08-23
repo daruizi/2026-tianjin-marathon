@@ -42,29 +42,41 @@ const SEGMENTS = {
   }
 };
 
-// VDOT 61 目标配速 + 当前起步配速 (2026-06-07 据 2026-05-23 实测校准)
-// 关键发现: 5/23 滚动最快 1km = 3:55 @ HR158 (次极限, 比全马心率还低) → 真实上限高于 4:00,
-//          整周 HR>165 仅 0.8% → 缺口是「高心率耐受 / 速度耐力」, 不是有氧能力。
-// 用户偏好 (2026-06-07): 信心优先 — 先从 4:05 起步, 当前配速「完全无压力」后每次降 5 秒进下一档,
-//          一档一档逼近 range 列目标 (4:05 → 4:00 → 3:55 → ...)。不急于一步到位。
+// 配速表 v3 — 2026-08-23 据 W4-W13 十周实测数据重新校准 (见 W4-W13-十周阶段复盘.html)
+// 「信心优先阶梯」已毕业: 6/07 定的 4:05 起步档, 到 8/19 已能做 15.9km 主课 @3:57 (HR169/峰值181)。
+// 实测最大心率 183 (8/5), 高于此前假设。165+ 停留从 2 min/周 涨到 71 min/周 —— 高心率耐受缺口已补上。
+// 新的唯一缺口: 马拉松专项耐力。十周长跑内最长连续 4:08 段仅 3.1 km (计划要求 18 km)。
+// ⚠ 夏训判读: 26-28℃ 下 MP 的等效配速是 4:21-4:28。9 月中前 MP 课一律按心率 155-163 判定, 不要追配速。
 const PACES = {
-  E:        { range: '4:55-5:10', hr: '≤145', desc: '真·有氧, 大部分跑量在这' },
-  recovery: { range: '5:00-5:20', hr: '≤140', desc: '周四专用, 慢即正确 (要更慢更短)' },
-  M:        { range: '4:08',      hr: '~160', desc: '目标比赛配速 (有氧上毫无压力)' },
-  T:        { range: '3:55-4:00', start: '4:05', hr: '168-175', desc: '信心优先: 4:05 起步 → 4:00 → 3:55 (无压力才进下一档)' },
-  I:        { range: '3:40',      start: '4:05', hr: '~max-5', desc: 'VO2max: 4:05 建立节奏 → 渐进 3:55 → 3:48 → 3:40' },
-  R:        { range: '3:25-3:30', start: '3:50', hr: '—', desc: '200-400m + strides (W4 起): 保守起步 3:50 → 渐进 3:25' },
+  E:        { range: '5:00-5:20', hr: '≤145', desc: '真·有氧, 大部分跑量在这 (实测执行良好)' },
+  recovery: { range: '5:20-5:40', hr: '≤140', desc: '周四专用, 慢即正确' },
+  M:        { range: '4:08',      hr: '155-163', heat: '26-28℃ → 4:21-4:28', desc: '★ 目标比赛配速 — 剩余 9 周的唯一重点, 必须进长跑' },
+  T:        { range: '3:55-4:00', hr: '165-172', desc: '已达成: 8/19 主课 15.9km @3:57 · 维持即可, 不再加码' },
+  I:        { range: '3:38-3:45', hr: '175-181', desc: '已达成: 8/5 的 9×1000m @3:52 · 比赛期只保留少量' },
+  R:        { range: '3:25-3:30', hr: '—',       desc: '已达成: 8/19 的 10×390m @3:31 · 维持神经肌肉即可' },
 };
 
-// 每周固定 6 天框架 (基于月 500km / 年 6000km 目标重新设计)
+// 气温 → MP 等效配速折算 (含湿度影响的经验区间, 仅供判读)
+const HEAT_TABLE = [
+  { temp: '10-14℃', mp: '4:08',      judge: '看配速', note: '10/25 天津清晨预期, 这是真正的目标值' },
+  { temp: '18-20℃', mp: '4:12-4:15', judge: '看配速', note: '10 月上旬, 可按配速校准' },
+  { temp: '23-25℃', mp: '4:17-4:22', judge: '配速+心率', note: '9 月中下旬, 两者取先到者' },
+  { temp: '26-28℃', mp: '4:21-4:28', judge: '只看心率', note: '★ 当前 8/9 月 — 锁 HR 155-163' },
+  { temp: '30℃+',   mp: '4:27-4:36', judge: '只看心率', note: '或把专项课挪早 / 改期' },
+];
+
+// 每周固定 6 天框架 v2 — 2026-08-23 修订
+// 改动理由 (据 W4-W13 实测): ① 周六从 19→15km 纯 E, 给周日专项课让路 (W12/W13 出现 64km/60km 周末,
+// 直接导致 8/23 长跑均配 5:26、中段崩到 6:06); ② 周日从 37km 匀速改成 30-35km 内嵌 MP —— 时长更短, 专项价值高一个量级。
+// 周二/周四可 ±3km 微调, 以命中当周 vol 目标。
 const WEEK_FRAME = [
-  { day: '周一', km: 0,  type: 'strength', label: '力量 #1', detail: '下肢主力 + 爆发, 40 min' },
-  { day: '周二', km: 19, type: 'E',        label: 'E 真慢',   detail: 'HR ≤145 + 6×100m strides' },
-  { day: '周三', km: 22, type: 'quality',  label: '主质量课', detail: 'T 或 I, 隔周交替 (含 WU + 主课 + CD)' },
-  { day: '周四', km: 19, type: 'recovery', label: 'E 真·恢复', detail: 'HR ≤140, 配速 5:00+' },
-  { day: '周五', km: 9,  type: 'E',        label: 'E + 力量 #2', detail: '9km E + 力量 #2 (单侧 + 髋稳定)' },
-  { day: '周六', km: 19, type: 'E',        label: 'E 中等',   detail: 'HR 140-150 + 末段 6×strides, 无强度' },
-  { day: '周日', km: 37, type: 'long',     label: '长跑 + MP block', detail: 'MP block 随阶段递增' },
+  { day: '周一', km: 0,  type: 'strength', label: '力量 (防伤最小集)', detail: '25 min: 单腿离心提踵 + 保加利亚分腿蹲 + 核心' },
+  { day: '周二', km: 22, type: 'E',        label: 'E 真慢',   detail: 'HR ≤145 + 6×100m strides' },
+  { day: '周三', km: 17, type: 'quality',  label: '主质量课', detail: 'T 为主 (含 WU + 主课 + CD) · 关键周主动减量护周日' },
+  { day: '周四', km: 20, type: 'recovery', label: 'E 真·恢复', detail: 'HR ≤140, 配速 5:20+' },
+  { day: '周五', km: 12, type: 'E',        label: 'E + 力量 #2', detail: 'E 轻松 + 力量 15 min (Pallof / 单腿硬拉 / 臀桥)' },
+  { day: '周六', km: 15, type: 'E',        label: 'E 短·纯有氧', detail: '★ HR ≤145, 配速 5:15+ — 绝不跑快, 给周日让路' },
+  { day: '周日', km: 34, type: 'long',     label: '★ 专项长跑 (内嵌 MP)', detail: '30-35km, MP 段按阶梯递增: 12→14→16→8→20→14' },
 ];
 
 // 22 周计划 (天津马拉松版)
@@ -85,18 +97,58 @@ const WEEKS = [
   { wk: 11, start: '2026-08-03', phase: 'build',  vol: 125, wednesday: '[I] WU 4km + 5×1200m @ 3:38 (jog 400m) + CD ~9km',  sunday: '22km E + 中段 15 km @ MP', note: 'MP 突破 15' },
   { wk: 12, start: '2026-08-10', phase: 'build',  vol: 125, wednesday: '[R+I] WU 4km + 4×400m @ 3:25 + 4×1000m @ 3:38 (jog 400m) + CD ~6km',   sunday: '19km E + 中段 18 km @ MP', note: '★ R+I 混合 + MP 突破 18', star: true },
   { wk: 13, start: '2026-08-17', phase: 'build',  vol: 125, wednesday: '[I] WU 4km + 6×1200m @ 3:38 (jog 400m) + CD ~6km',  sunday: '19km E + 中段 18 km @ MP', note: 'I 量峰值' },
-  { wk: 14, start: '2026-08-24', phase: 'build',  vol: 100,   wednesday: '[cutback] [T] WU 4km + 4×2km @ 3:55 (jog 2min) + CD ~7km', sunday: '30km E + 末段 8 km @ MP', note: 'Cutback, 强化期收尾', cutback: true },
+  // ===== 以下 W14-W22 为 2026-08-23 修订版 (v2) =====
+  // 修订依据: W4-W13 十周实测 —— 长跑内最长连续 MP 段仅 3.1km (计划要求 18km), 原计划 W15 直接要 22km MP、
+  // W16 要 25km MP, 在此基础上不可能落地。改为「分段 MP → 连续 MP」阶梯: 12 → 14 → 16连续 → 8 → 20连续 → 14。
+  // 同时周量 136 → 124-128, 并真正执行 W14 / W17 两个减量周。详见 W4-W13-十周阶段复盘.html
+  { wk: 14, start: '2026-08-24', phase: 'build',  vol: 110, days: [0, 20, 17, 17, 10, 14, 32], wednesday: '[T] WU 3km + 5×2km @ 3:58 (jog 2min) + CD 3km ≈ 17km', sunday: '32km = 8km E + 3×4km @ MP (1.5km E 浮动) + 6km E 收尾 · MP 合计 12km', note: '★ 真减量周 (−25km) + MP 阶梯启动 · 先教会身体认识这个配速', cutback: true, star: true },
   // 比赛期 (5 周, 8/31-10/4) - MP 特异性
-  { wk: 15, start: '2026-08-31', phase: 'race',   vol: 125, wednesday: '[T] WU 4km + 5×2km @ 3:55 (jog 2min) + CD ~5km',    sunday: '15km E + 中段 22 km @ MP', note: 'MP 22 km' },
-  { wk: 16, start: '2026-09-07', phase: 'race',   vol: 125, wednesday: '[T] WU 4km + 2×15min @ 3:55 (jog 3min) + CD ~8km',   sunday: '★ 37km 含 25 km @ MP + 全程比赛补给演练', note: '★ 全周期关键日', star: true, key: true },
-  { wk: 17, start: '2026-09-14', phase: 'race',   vol: 100,   wednesday: '[cutback] [T] WU 4km + 3×8min @ 3:55 + CD ~9km',     sunday: '30km E + 末段 8 km @ MP', note: 'Cutback 恢复', cutback: true },
-  { wk: 18, start: '2026-09-21', phase: 'race',   vol: 125, wednesday: '[T] WU 4km + 4×2km @ 3:55 (jog 2min) + CD ~7km',    sunday: '19km E + 中段 18 km @ MP', note: '最后一次 18 km MP' },
-  { wk: 19, start: '2026-09-28', phase: 'race',   vol: 110,   wednesday: '[T] WU 4km + 4×1.6km @ 3:55 (jog 90s) + CD ~8km',    sunday: '28km E + 中段 18 km @ MP + 装备演练', note: '减量启动前最后一周' },
+  { wk: 15, start: '2026-08-31', phase: 'race',   vol: 126, days: [0, 24, 16, 21, 15, 16, 34], wednesday: '[T] WU 3km + 3×3km @ 4:00 (jog 3min) + CD 3km ≈ 16km', sunday: '34km = 8km E + 2×7km @ MP (2km E 浮动) + 5km E 收尾 · MP 合计 14km', note: 'MP 段落拉长, 浮动缩短' },
+  { wk: 16, start: '2026-09-07', phase: 'race',   vol: 128, days: [0, 24, 14, 22, 17, 16, 35], wednesday: '[T 轻] WU 3km + 2×15min @ 4:00 (jog 3min) + CD 3km ≈ 14km · 刻意减量保护周日', sunday: '★ 35km = 7km E + 16km 连续 @ MP + 12km E 收尾 · 全程补给/装备演练', note: '★ 新 go/no-go 节点 (替代已错过的 W9 半马测试) · 判据: ≤4:10 或 22℃+ 时 HR ≤163, 后 4km 不慢于前 4km', star: true, key: true },
+  { wk: 17, start: '2026-09-14', phase: 'race',   vol: 108, days: [0, 20, 13, 18, 15, 16, 26], wednesday: '[I] WU 3km + 5×1000m @ 3:45 (jog 90s) + CD 3km ≈ 13km', sunday: '26km E + 末段 8 km @ MP', note: '★ 真减量周 (−20km) · 吸收 W16, 保留一点速度', cutback: true },
+  { wk: 18, start: '2026-09-21', phase: 'race',   vol: 126, days: [0, 24, 15, 22, 15, 16, 34], wednesday: '[T 轻] WU 3km + 4×2km @ 3:58 (jog 2min) + CD 3km ≈ 15km · 同样刻意减量', sunday: '★★ 34km = 8km E + 20km 连续 @ MP + 6km E 收尾', note: '★★ 全周期最重要的一课 · 气温应已 ≤22℃, 按配速判定', star: true, key: true },
+  { wk: 19, start: '2026-09-28', phase: 'race',   vol: 114, days: [0, 22, 14, 20, 14, 16, 28], wednesday: '[T] WU 3km + 3×2km @ 3:55 + 4×400m @ 3:30 + CD 3km ≈ 14km', sunday: '28km = 8km E + 14km @ MP + 6km E · 全套比赛装备 + 起跑时间模拟 + 补给复演', note: '最后一次长专项, 之后只减不加' },
   // 减量期 (3 周, 10/5-10/25)
-  { wk: 20, start: '2026-10-05', phase: 'taper',  vol: 90,   wednesday: '[taper] [T] WU 3km + 3×1.6km @ 3:55 + CD ~5km ≈ 14km · 周二/四/六 ↓ 15km', sunday: '22km E + 末段 10 km @ MP', note: 'Taper 启动, 力量 ↓ 1 次', cutback: true },
-  { wk: 21, start: '2026-10-12', phase: 'taper',  vol: 65,    wednesday: '[taper] [T] WU 3km + 3×1km @ 3:55 + CD ~4km ≈ 10km · 周二/四/六 ↓ 12km',    sunday: '22km E (最后一次较长跑, 无 MP)', note: '力量轻量 1 次', cutback: true },
-  { wk: 22, start: '2026-10-19', phase: 'taper',  vol: 55,    wednesday: '8km E · 周二 WU 3km + 2×1km @ MP + CD 2km · 周四 6km E + 4 strides · 周五 跑休 · 周六 3km + 4 strides', sunday: '★★ 10/25 比赛日 · 7:30 鸣枪 · 目标 2:54:30 ★★', note: '★ 比赛周', star: true, race: true },
+  { wk: 20, start: '2026-10-05', phase: 'taper',  vol: 92, days: [0, 18, 12, 16, 12, 12, 22], wednesday: '[taper T] WU 3km + 3×1.6km @ 3:55 + CD 3km ≈ 12km · 周二/四/六 ↓', sunday: '22km E + 末段 8 km @ MP', note: 'Taper 启动 · 量降强度保 · 力量 ↓ 每周 1 次', cutback: true },
+  { wk: 21, start: '2026-10-12', phase: 'taper',  vol: 68, days: [0, 14, 9, 12, 9, 8, 16], wednesday: '[taper] WU 2km + 3×1km @ 3:55 + CD 2km ≈ 9km · 周二/四/六 ↓ 12km', sunday: '16km E + 4km @ MP (最后一次触碰比赛配速)', note: '睡眠 / 碳水优先级 > 训练 · 力量停', cutback: true },
+  { wk: 22, start: '2026-10-19', phase: 'taper',  vol: 66, days: [0, 7, 8, 6, 0, 3, 42], wednesday: '8km E · 周二 WU 2km + 3×1km @ MP + CD 2km · 周四 6km E + 4 strides · 周五 跑休 · 周六 3km + 4 strides', sunday: '★★ 10/25 比赛日 · 7:30 鸣枪 · 目标 2:54:30 · 前 10km 不快于 4:10 ★★', note: '★ 比赛周', star: true, race: true },
 ];
+
+// ===== W4-W13 实测复盘数据 (2026-06-15 ~ 08-24, 由 81 个 FIT 文件秒级解析) =====
+// 完整分析见 W4-W13-十周阶段复盘.html
+const BLOCK_REVIEW = {
+  range: '2026-06-15 ~ 2026-08-24',
+  grade: 'B+',
+  totalKm: 1361.9, totalHours: 118.0, runDays: 60, runSessions: 63, restDays: 9,
+  avgTempC: 26.0, maxTempC: 35, totalAscentM: 3172, overreachPct: 29,
+  headline: '引擎造好了, 但从没装到赛道上 —— 十周 0 次真正的马拉松配速长跑',
+  weeks: [
+    // wk, 计划量, 实际量, 165+停留(min), 165+占比%, 主课km, 主课均配(s), 计划MP km, 实际最长连续MP km, 长跑脱钩%
+    { wk: 4,  planKm: 100, km: 134.6, hr165min: 2,  hr165pct: 0.3, mainKm: null,  mainPace: null,  planMP: 0,    mpBlock: 0.0, decouple: -18.7 },
+    { wk: 5,  planKm: 125, km: 135.2, hr165min: 41, hr165pct: 5.8, mainKm: 9.70,  mainPace: 245.7, planMP: 8,    mpBlock: 1.6, decouple: -8.5  },
+    { wk: 6,  planKm: 125, km: 136.0, hr165min: 5,  hr165pct: 0.7, mainKm: null,  mainPace: null,  planMP: 6,    mpBlock: 0.9, decouple: -3.6  },
+    { wk: 7,  planKm: 125, km: 135.9, hr165min: 22, hr165pct: 3.0, mainKm: 9.47,  mainPace: 248.1, planMP: 10,   mpBlock: 0.7, decouple: -12.9 },
+    { wk: 8,  planKm: 125, km: 135.7, hr165min: 45, hr165pct: 6.4, mainKm: 10.02, mainPace: 242.0, planMP: 12,   mpBlock: 1.0, decouple: -10.2 },
+    { wk: 9,  planKm: 105, km: 135.9, hr165min: 50, hr165pct: 7.2, mainKm: 9.74,  mainPace: 240.3, planMP: 21.1, mpBlock: 0.7, decouple: -22.5 },
+    { wk: 10, planKm: 100, km: 135.7, hr165min: 67, hr165pct: 9.6, mainKm: 9.37,  mainPace: 249.8, planMP: 0,    mpBlock: 0.7, decouple: -32.6 },
+    { wk: 11, planKm: 125, km: 136.4, hr165min: 49, hr165pct: 6.8, mainKm: 12.39, mainPace: 229.8, planMP: 15,   mpBlock: 1.6, decouple: -13.4 },
+    { wk: 12, planKm: 125, km: 139.2, hr165min: 47, hr165pct: 6.5, mainKm: 14.45, mainPace: 250.2, planMP: 18,   mpBlock: 3.1, decouple: -9.1  },
+    { wk: 13, planKm: 125, km: 137.2, hr165min: 71, hr165pct: 9.8, mainKm: 15.89, mainPace: 237.4, planMP: 18,   mpBlock: 4.1, decouple: -16.1 },
+  ],
+  wins: [
+    '出勤 60/60 天零缺勤, 周量方差极小 (134.6-139.2km), 平均气温 26℃ 无一次因天气缩水',
+    '高心率耐受缺口被打开: 165+ 停留 2 → 71 min/周, 峰值心率摸到 183 (此前全年最高 174)',
+    '周三主课从 9.7km @4:06 长到 15.9km @3:57',
+    '跑姿改善: 高速段垂直振幅比 7.11 → 5.92, 触地 247 → 238ms, 步幅 1160 → 1327mm',
+  ],
+  gaps: [
+    '① 决定成败: 长跑内嵌 MP 段十周 0 次执行 (计划 8→18km, 实际最长连续 4:08 段 3.1km)',
+    '② 十周无一次减量周 (W4/W9/W10 超计划 +31~36km), 长跑脱钩恶化到 −32.6%, TE 5.0 占 29%',
+    '③ W9 半马 go/no-go 测试被跳过, 且 W12/W13 出现 64km/60km 双长跑周末, 周六吃掉周日',
+    '④ 力量训练十周无有效记录 (计划 20 次)',
+  ],
+  verdict: '按现状直接上场约 2:57-2:59 (仍可能是 PB); 执行 W14-W22 修订方案且 W16/W18 两课达标, 2:54-2:56 在射程内。',
+};
 
 // 力量训练动作
 const STRENGTH = {
@@ -129,8 +181,7 @@ const STRENGTH = {
   periodization: [
     { wk: 'W1-W3',   phase: '学习期',   intensity: 'RPE 6-7, 轻重量',        goal: '熟悉动作, 无伤病' },
     { wk: 'W4-W12',  phase: '构建期',   intensity: 'RPE 7-8, 每 2 周加 2.5-5kg', goal: '神经驱动 + 肌力' },
-    { wk: 'W13-W17', phase: '维持期',   intensity: 'RPE 7, 重量不再加',       goal: '保持力量, 让位跑步质量' },
-    { wk: 'W18-W19', phase: '微减期',   intensity: '组数 4 → 3, 重量保持',    goal: '储能' },
+    { wk: 'W14-W19', phase: '防伤最小集 (2026-08-23 降级)', intensity: '周一 25min + 周五 15min, 自重/轻哑铃', goal: '距赛 9 周, 大重量窗口已关闭; 只保留小腿离心 + 单腿稳定 + 核心, 对冲 130km/周 的跟腱负荷' },
     { wk: 'W20-W21', phase: '减量期',   intensity: '仅 1 次/周, 轻量',         goal: '维持神经记忆' },
     { wk: 'W22',     phase: '比赛周',   intensity: '完全停力量',               goal: '肌肉新鲜' },
   ]
@@ -162,8 +213,10 @@ const MILESTONES = [
   { date: '2026-05-25', label: '训练启动 (W1 降级版)',  desc: '力量 #1 学习期 RPE 6 · 周三 T 降级 3×5min' },
   { date: '2026-06-08', label: '★ I 训练提前 (W3)',     desc: '原 W6 改提前: VO2max 启动 (1km PB 5 年没破)' },
   { date: '2026-06-15', label: '★ R 训练首次 (W4)',     desc: '8×400m @ 3:25, 唤醒神经肌肉' },
-  { date: '2026-07-26', label: '★ 半马 T 测试 (W9)',    desc: 'sub 2:55 第一个 go/no-go: ≤1:25 高概率' },
-  { date: '2026-09-13', label: '★ 25 km MP 长跑 (W16)', desc: '全周期最难一课, 完成 = 锁定一半 sub 2:55' },
+  { date: '2026-07-26', label: '✗ 半马 T 测试 (W9) — 未执行', desc: '当日改跑 36.8km 匀速长跑, 全周期唯一体能标尺缺失 → 已由 W16 顶替' },
+  { date: '2026-08-24', label: '★ 计划 v2 修订 (W14)',   desc: '据十周实测重建: 周量 136→124-128, 真减量周回归, MP 阶梯 12→14→16→8→20→14' },
+  { date: '2026-09-13', label: '★ 16 km 连续 MP (W16)',  desc: '新 go/no-go: ≤4:10 或 HR ≤163 且后 4km 不慢于前 4km → 锁定 2:54:30' },
+  { date: '2026-09-27', label: '★★ 20 km 连续 MP (W18)', desc: '全周期最重要一课, 峰值专项 · 气温应已 ≤22℃, 按配速判定' },
   { date: '2026-10-05', label: '减量启动 (W20)',        desc: '量降, 力量减到 1 次/周' },
   { date: '2026-10-19', label: '力量完全停 (W22)',      desc: '比赛周, 肌肉储能' },
   { date: '2026-10-25', label: '★★ 比赛日',             desc: '2026 天津马拉松 (日期推测, 待官方确认)' },
@@ -188,7 +241,7 @@ const LOG_SLOTS = [
 const PHASES = {
   base1: { name: '基础期 I',  range: 'W1-W4',   color: '#e8f3e8', desc: '强度引入, T 配速从 4:00 起步' },
   base2: { name: '基础期 II', range: 'W5-W9',   color: '#ddeeff', desc: 'T+I 交替, 半马测试' },
-  build: { name: '强化期',    range: 'W10-W14', color: '#ffe7c2', desc: '双引擎齐上, MP 15-18km' },
-  race:  { name: '比赛期',    range: 'W15-W19', color: '#ffd1d1', desc: 'MP 特异性 25km, I 撤回' },
+  build: { name: '强化期',    range: 'W10-W14', color: '#ffe7c2', desc: 'W10-W13 已完成 (引擎达标, MP 未执行) · W14 转为真减量 + MP 阶梯启动' },
+  race:  { name: '比赛期',    range: 'W15-W19', color: '#ffd1d1', desc: 'MP 专项重建: 14 → 16连续 → 8 → 20连续 → 14 km @ 4:08' },
   taper: { name: '减量期',    range: 'W20-W22', color: '#f5e6f5', desc: '量降强度保, 比赛准备' },
 };
