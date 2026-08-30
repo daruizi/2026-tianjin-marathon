@@ -80,6 +80,15 @@ const WEEK_FRAME = [
 ];
 
 // 22 周计划 (天津马拉松版)
+//
+// ⚠ 判读基准 (2026-08-30 跑者确认): **以实际训练数据为准。**
+// 本数组是计划的「设计值」, 供参考与趋势对照; 它**不是**评价训练的对错标准。
+// 跑者当日实际课表可能与此不同 —— 已知一例: W14 周四实跑
+// 「2×1000m @4:00 + 2×1000m @3:50 + 2×1000m @3:40 + 10×400m @4:00」是当日课表,
+// 而下面 wk:14 的 wednesday 写的是「5×2km @3:58」。
+// 做周报时: 结构与配速从 FIT 的 lap 数据还原, 需要目标配速就用跑者给的当日课表;
+// **不要据 WEEKS 判定「主课未执行 / 换课型」**(2026-08-30 已因此错判两次)。
+// 实测记录见下方 WEEK_REVIEWS。
 const WEEKS = [
   // 基础期 I (4 周, 5/25-6/21) - 强度引入 [基于 HRV BELOW 已修订 W1]
   { wk: 1,  start: '2026-05-25', phase: 'base1',  vol: 95,   wednesday: '[降级] WU 4km + 3×5min @ 4:00 (jog 2min) + CD ~13km · HRV 异常应急', sunday: '30km E (降量, 原 37km)', note: 'W1 降级 · 等 HRV 回 IN_RANGE 再上量' },
@@ -101,7 +110,8 @@ const WEEKS = [
   // 修订依据: W4-W13 十周实测 —— 长跑内最长连续 MP 段仅 3.1km (计划要求 18km), 原计划 W15 直接要 22km MP、
   // W16 要 25km MP, 在此基础上不可能落地。改为「分段 MP → 连续 MP」阶梯: 12 → 14 → 16连续 → 8 → 20连续 → 14。
   // 同时周量 136 → 124-128, 并真正执行 W14 / W17 两个减量周。详见 W4-W13-十周阶段复盘.html
-  { wk: 14, start: '2026-08-24', phase: 'build',  vol: 110, days: [0, 20, 17, 17, 10, 14, 32], wednesday: '[T] WU 3km + 5×2km @ 3:58 (jog 2min) + CD 3km ≈ 17km', sunday: '32km = 8km E + 3×4km @ MP (1.5km E 浮动) + 6km E 收尾 · MP 合计 12km', note: '★ 真减量周 (−25km) + MP 阶梯启动 · 先教会身体认识这个配速', cutback: true, star: true },
+  // ⚠ wk14 wednesday 为设计值; 实际当日课表是递减梯 + 10×400m, 见 WEEK_REVIEWS[0].days[3].card
+  { wk: 14, start: '2026-08-24', phase: 'build',  vol: 110, days: [0, 20, 17, 17, 10, 14, 32], wednesday: '[设计值, 未采用] WU 3km + 5×2km @ 3:58 (jog 2min) + CD 3km ≈ 17km', sunday: '32km = 8km E + 3×4km @ MP (1.5km E 浮动) + 6km E 收尾 · MP 合计 12km', note: '★ 真减量周 (−25km) + MP 阶梯启动 · 先教会身体认识这个配速', cutback: true, star: true },
   // 比赛期 (5 周, 8/31-10/4) - MP 特异性
   { wk: 15, start: '2026-08-31', phase: 'race',   vol: 126, days: [0, 24, 16, 21, 15, 16, 34], wednesday: '[T] WU 3km + 3×3km @ 4:00 (jog 3min) + CD 3km ≈ 16km', sunday: '34km = 8km E + 2×7km @ MP (2km E 浮动) + 5km E 收尾 · MP 合计 14km', note: 'MP 段落拉长, 浮动缩短' },
   { wk: 16, start: '2026-09-07', phase: 'race',   vol: 128, days: [0, 24, 14, 22, 17, 16, 35], wednesday: '[T 轻] WU 3km + 2×15min @ 4:00 (jog 3min) + CD 3km ≈ 14km · 刻意减量保护周日', sunday: '★ 35km = 7km E + 16km 连续 @ MP + 12km E 收尾 · 全程补给/装备演练', note: '★ 新 go/no-go 节点 (替代已错过的 W9 半马测试) · 判据: ≤4:10 或 22℃+ 时 HR ≤163, 后 4km 不慢于前 4km', star: true, key: true },
@@ -159,6 +169,8 @@ const BLOCK_REVIEW = {
 };
 
 // ===== 每周实测复盘 (逐周追加) =====
+// ★ 这是评价训练的**权威基准** (2026-08-30 跑者确认「以我实际训练数据为准」)。
+// WEEKS[] 只是设计值参考; 冲突时以本数组 + FIT 原始数据为准。
 // 口径: 净运动时间 (相邻记录点间隔 >2.5s 判定为停表并剔除); 心率区间按实测最大心率 183。
 // 「最长连续 ≤X 段」= 100m 重采样后平均配速满足阈值的最长连续块。
 const WEEK_REVIEWS = [
