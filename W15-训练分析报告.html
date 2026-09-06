@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="W15 训练周报 2026-08-31~09-06 · 2026 天津马拉松 sub 2:55">
+<title>W15 训练周报 · 2026 天津马拉松 sub 2:55</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#f8fafc; --surface:#ffffff; --surface-2:#f1f5f9; --surface-3:#eef2f7;
+    --border:#e2e8f0; --border-strong:#cbd5e1;
+    --text:#0f172a; --navy:#1e3a8a; --muted:#475569; --muted-2:#64748b;
+    --primary:#1e40af; --primary-2:#3b82f6; --primary-soft:#dbeafe;
+    --accent:#f59e0b; --accent-soft:#fef3c7;
+    --cyan:#06b6d4;
+    --good:#16a34a; --good-soft:#dcfce7;
+    --warn:#d97706; --warn-soft:#fef3c7;
+    --bad:#dc2626;  --bad-soft:#fee2e2;
+    --violet:#7c3aed; --violet-soft:#ede9fe;
+    --shadow:0 1px 2px rgba(15,23,42,.04),0 1px 3px rgba(15,23,42,.06);
+    --shadow-md:0 4px 6px -1px rgba(15,23,42,.06),0 2px 4px -2px rgba(15,23,42,.05);
+    --shadow-lg:0 12px 28px -8px rgba(15,23,42,.16),0 4px 10px -4px rgba(15,23,42,.08);
+    --mono:'Fira Code',ui-monospace,SFMono-Regular,Consolas,monospace;
+    --sans:'Fira Sans','PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:
+        radial-gradient(1200px 600px at 100% -10%,rgba(22,163,74,.07),transparent 60%),
+        radial-gradient(900px 500px at -10% 0%,rgba(245,158,11,.05),transparent 55%),
+        var(--bg);
+       color:var(--text);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:36px 22px 90px}
+  .mono{font-family:var(--mono);font-feature-settings:"tnum" 1}
+  a{color:var(--primary)}
+  svg.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;
+         stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+
+  /* ---------- header ---------- */
+  header{background:var(--surface);border:1px solid var(--border);border-radius:18px;
+         padding:30px 32px;box-shadow:var(--shadow-md);margin-bottom:26px;position:relative;overflow:hidden}
+  header::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;
+    background:linear-gradient(90deg,var(--good),var(--primary-2) 55%,var(--accent))}
+  .eyebrow{font-family:var(--mono);color:var(--primary-2);font-weight:600;
+           letter-spacing:.16em;font-size:12px;text-transform:uppercase}
+  h1{font-size:30px;font-weight:700;color:var(--navy);margin:10px 0 8px;line-height:1.18;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:14.5px}
+  .badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);
+         border:1px solid var(--border);border-radius:999px;padding:6px 14px;
+         font-size:13px;color:var(--muted)}
+  .badge b{color:var(--text);font-weight:600}
+  .badge .mono{font-size:12.5px}
+  .badge.goal{background:var(--primary-soft);border-color:#bfdbfe;color:var(--primary)}
+  .badge.goal b{color:var(--primary)}
+  .badge.star{background:var(--good-soft);border-color:#bbf7d0;color:#15803d}
+  .badge.star b{color:#14532d}
+  .badge svg{color:var(--primary-2)}
+  .badge.star svg{color:var(--good)}
+  .navlinks{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px;font-size:12.5px}
+  .navlinks a{display:inline-block;padding:5px 11px;border-radius:8px;background:var(--surface-2);
+    border:1px solid var(--border);color:var(--muted);text-decoration:none;transition:background .2s,color .2s,border-color .2s}
+  .navlinks a:hover{background:var(--primary-soft);color:var(--primary);border-color:#bfdbfe}
+  .navlinks a:focus-visible{outline:2px solid var(--primary-2);outline-offset:2px}
+
+  /* ---------- verdict ---------- */
+  .verdict{display:flex;gap:22px;align-items:flex-start;background:var(--surface);
+    border:1px solid var(--border);border-left:5px solid var(--good);border-radius:16px;
+    padding:24px 28px;box-shadow:var(--shadow);margin-bottom:22px}
+  .grade-badge{flex:0 0 auto;width:112px;text-align:center;border-right:1px solid var(--border);padding-right:22px}
+  .grade-badge .g{font-family:var(--mono);font-size:52px;font-weight:700;color:var(--good);line-height:1}
+  .grade-badge .gl{font-size:11px;color:var(--muted-2);letter-spacing:.1em;margin-top:4px;text-transform:uppercase}
+  .grade-badge .trend{margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--good);
+    background:var(--good-soft);border-radius:6px;padding:3px 6px;display:inline-flex;align-items:center;gap:4px;font-weight:600}
+  .verdict .vt{font-size:18px;font-weight:600;color:var(--navy);margin-bottom:8px}
+  .verdict p{color:var(--muted);font-size:14.5px}
+  .verdict p + p{margin-top:9px}
+  .verdict .hl{color:var(--text);font-weight:600;background:var(--good-soft);padding:0 3px;border-radius:3px}
+  .verdict .hlw{color:var(--text);font-weight:600;background:var(--accent-soft);padding:0 3px;border-radius:3px}
+  .verdict .neg{color:var(--bad);font-weight:600}
+  .verdict .pos{color:var(--good);font-weight:700}
+
+  /* ---------- insight band ---------- */
+  .insight{display:flex;gap:13px;border-radius:14px;padding:16px 20px;margin-bottom:34px;box-shadow:var(--shadow)}
+  .insight.break{background:linear-gradient(100deg,var(--good-soft),#eafff1);border:1px solid #bbf7d0}
+  .insight.warnband{background:linear-gradient(100deg,var(--accent-soft),#fffbeb);border:1px solid #fcd34d}
+  .insight svg{width:22px;height:22px;flex:0 0 auto;margin-top:2px}
+  .insight.break svg{color:var(--good)}
+  .insight.warnband svg{color:var(--warn)}
+  .insight .it{font-size:14px;line-height:1.7}
+  .insight.break .it{color:#14532d}
+  .insight.break .it b{color:#065f46}
+  .insight.warnband .it{color:#78350f}
+  .insight.warnband .it b{color:#92400e}
+
+  /* ---------- section ---------- */
+  section{margin:40px 0;scroll-margin-top:20px}
+  h2{font-size:21px;font-weight:700;color:var(--navy);margin-bottom:5px;
+     display:flex;align-items:center;gap:11px}
+  h2 .num{font-family:var(--mono);background:var(--primary);color:#fff;width:28px;height:28px;
+          border-radius:8px;display:inline-flex;align-items:center;justify-content:center;
+          font-size:14px;font-weight:600;flex:0 0 auto}
+  h2 .num.star{background:var(--good)}
+  h3{font-size:16px;font-weight:600;color:var(--navy);margin:26px 0 12px}
+  .lead{color:var(--muted-2);font-size:13.5px;margin-bottom:20px;padding-left:39px}
+
+  /* ---------- stat cards ---------- */
+  .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:13px}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+        padding:17px 15px;box-shadow:var(--shadow);transition:box-shadow .2s,transform .2s;position:relative;overflow:hidden}
+  .stat:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+  .stat.feature{border-color:#bbf7d0;background:linear-gradient(180deg,#fff,#f3fdf6)}
+  .stat.feature::after{content:"★";position:absolute;top:9px;right:11px;color:var(--good);font-size:13px}
+  .stat.miss{border-color:#fcd34d;background:linear-gradient(180deg,#fff,#fffcf3)}
+  .stat .top{display:flex;align-items:center;gap:6px;color:var(--muted-2);font-size:11.5px;margin-bottom:9px}
+  .stat .top svg{width:14px;height:14px;color:var(--primary-2)}
+  .stat .v{font-family:var(--mono);font-size:23px;font-weight:700;color:var(--navy);line-height:1.1}
+  .stat .v small{font-size:13px;font-weight:500;color:var(--muted)}
+  .stat .d{font-size:11.5px;margin-top:8px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+  .up{color:var(--warn)} .ok{color:var(--good)} .dn{color:var(--bad)} .flat{color:var(--muted-2)}
+
+  /* ---------- table ---------- */
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);background:var(--surface)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:760px}
+  th,td{padding:12px 13px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:var(--surface-2);color:var(--muted-2);font-weight:600;font-size:11.5px;
+     text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+  tbody tr{transition:background .15s}
+  tbody tr:hover{background:var(--surface-2)}
+  tr:last-child td{border-bottom:none}
+  td small{color:var(--muted-2);font-size:12px}
+  tr.total{background:var(--surface-3);font-weight:600}
+  tr.total td{border-top:2px solid var(--border-strong)}
+  .tbl-wrap.narrow table{min-width:0;font-size:13px}
+  .tbl-wrap.narrow th,.tbl-wrap.narrow td{padding:9px 12px}
+  tr.hero-row{background:#f3fdf6}
+  tr.hero-row:hover{background:#eafff1}
+  .pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;
+        padding:2px 8px;border-radius:6px;white-space:nowrap}
+  .p-ok{background:var(--good-soft);color:#15803d}
+  .p-warn{background:var(--accent-soft);color:#b45309}
+  .p-bad{background:var(--bad-soft);color:#b91c1c}
+  .p-star{background:var(--good);color:#fff}
+  .p-info{background:var(--primary-soft);color:var(--primary)}
+  .p-mute{background:var(--surface-3);color:var(--muted-2)}
+
+  /* ---------- charts ---------- */
+  .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+              padding:20px 22px;box-shadow:var(--shadow);margin-top:18px}
+  .chart-card h3{margin:0 0 3px;font-size:15.5px}
+  .chart-card .csub{color:var(--muted-2);font-size:12.5px;margin-bottom:14px}
+  .chart-box{position:relative;height:330px}
+  .chart-box.short{height:250px}
+  .cnote{margin-top:13px;font-size:12.5px;color:var(--muted);background:var(--surface-2);
+         border-left:3px solid var(--primary-2);border-radius:0 8px 8px 0;padding:10px 14px;line-height:1.65}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+  /* ---------- cards / recs ---------- */
+  .acards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+  .acard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow)}
+  .acard.good{border-left:4px solid var(--good)}
+  .acard.bad{border-left:4px solid var(--accent)}
+  .acard h4{font-size:14.5px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .acard h4 svg{width:17px;height:17px}
+  .acard.good h4 svg{color:var(--good)}
+  .acard.bad h4 svg{color:var(--accent)}
+  .acard ul{list-style:none}
+  .acard li{font-size:13.5px;color:var(--muted);padding:8px 0 8px 20px;position:relative;border-bottom:1px dashed var(--border)}
+  .acard li:last-child{border-bottom:none}
+  .acard li::before{content:"";position:absolute;left:2px;top:15px;width:6px;height:6px;border-radius:50%}
+  .acard.good li::before{background:var(--good)}
+  .acard.bad li::before{background:var(--accent)}
+  .acard li b{color:var(--text)}
+  .acard li .mono{color:var(--navy);font-weight:600}
+
+  .rec{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+       padding:18px 20px;box-shadow:var(--shadow);margin-top:14px;transition:box-shadow .2s}
+  .rec:hover{box-shadow:var(--shadow-md)}
+  .rec .rh{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+  .rec .rn{font-family:var(--mono);font-size:12px;font-weight:700;color:#fff;background:var(--primary);
+           width:24px;height:24px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .rec.key .rn{background:var(--good)}
+  .rec.warnrec .rn{background:var(--accent)}
+  .rec .rt{font-size:15px;font-weight:600;color:var(--navy)}
+  .rec p{font-size:13.5px;color:var(--muted);line-height:1.7}
+  .rec p + p{margin-top:7px}
+  .rec .box{margin-top:10px;background:var(--surface-2);border-radius:9px;padding:11px 14px;
+            font-family:var(--mono);font-size:12.5px;color:var(--navy);line-height:1.8}
+  .rec .box b{color:var(--primary)}
+
+  .callout{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--violet);
+           border-radius:0 14px 14px 0;padding:18px 22px;box-shadow:var(--shadow);margin-top:16px}
+  .callout h4{font-size:14.5px;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .callout h4 svg{width:17px;height:17px;color:var(--violet)}
+  .callout p{font-size:13.5px;color:var(--muted);line-height:1.7}
+
+  footer{margin-top:56px;padding:24px 26px;background:var(--surface);border:1px solid var(--border);
+         border-radius:14px;box-shadow:var(--shadow);font-size:12px;color:var(--muted-2);line-height:1.9}
+  footer b{color:var(--muted)}
+
+  @media(max-width:1000px){
+    .stats{grid-template-columns:repeat(3,1fr)}
+    .acards,.grid-2{grid-template-columns:1fr}
+  }
+  @media(max-width:640px){
+    .wrap{padding:22px 14px 60px}
+    h1{font-size:23px}
+    header{padding:22px 20px}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .verdict{flex-direction:column;gap:16px}
+    .grade-badge{width:100%;border-right:none;border-bottom:1px solid var(--border);padding:0 0 14px}
+    .lead{padding-left:0}
+    .chart-box{height:280px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
+  @media print{
+    body{background:#fff} .wrap{max-width:none}
+    header,.chart-card,.stat,.acard,.rec,.verdict,.tbl-wrap,footer,.insight,.callout{box-shadow:none;break-inside:avoid}
+    .stat:hover,.rec:hover{transform:none}
+  }
+
+  /* ===== 访问密码门 (与主站同一密码, 浅色主题) ===== */
+  html[data-auth="locked"] body > *:not(#auth-gate){visibility:hidden!important}
+  body[data-auth="locked"] > *:not(#auth-gate){visibility:hidden!important}
+  #auth-gate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#eef2f7,#dbeafe);padding:20px;visibility:visible!important}
+  #auth-gate .auth-box{background:#fff;border-radius:16px;padding:38px 34px;max-width:420px;width:100%;
+    box-shadow:0 20px 60px rgba(15,23,42,.18);text-align:center;border:1px solid var(--border);border-top:4px solid var(--primary)}
+  #auth-gate .auth-icon{font-size:46px;margin-bottom:12px}
+  #auth-gate h2{margin:0 0 6px;font-size:20px;font-weight:700;color:var(--navy)}
+  #auth-gate .auth-sub{color:var(--primary);font-size:13px;margin:0 0 22px;font-weight:600}
+  #auth-gate input[type="password"]{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:8px;
+    font-size:15px;font-family:inherit;color:var(--text);background:var(--surface-2);outline:none;transition:border-color .2s}
+  #auth-gate input[type="password"]:focus{border-color:var(--primary);background:#fff}
+  #auth-gate .auth-remember{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin:14px 0;cursor:pointer;user-select:none}
+  #auth-gate .auth-remember input{margin:0;cursor:pointer}
+  #auth-gate button[type="submit"]{width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;
+    font-size:15px;font-weight:600;cursor:pointer;transition:background .2s}
+  #auth-gate button[type="submit"]:hover:not(:disabled){background:#1e3a8a}
+  #auth-gate button[type="submit"]:disabled{background:#cbd5e1;cursor:not-allowed}
+  #auth-gate #auth-error{color:var(--bad);font-size:13px;margin-top:10px;min-height:18px;font-weight:600}
+  #auth-gate .auth-hint{font-size:11px;color:var(--muted-2);margin-top:20px;line-height:1.5}
+  @media print{#auth-gate{display:none!important}}
+</style>
+<script src="auth.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="eyebrow">计划 W15 · ISO WK36 · 比赛期第 1 周 · MP 专项阶梯第 2 级</div>
+  <h1>MP 段从「拼出来」变成「跑出来」</h1>
+  <div class="sub">
+    2026-08-31 ~ 09-06 训练周报 · 6 个训练日 / 9 次记录 / 135.81 km / 净运动 11 小时 33 分 ·
+    由 9 个 FIT 文件秒级解析（已扣除停表时间）
+  </div>
+  <div class="badges">
+    <span class="badge goal"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg>目标 <b class="mono">sub 2:55</b></span>
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>距比赛 <b class="mono">7 周</b>（10/25）</span>
+    <span class="badge star"><svg class="ic" viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>不间断 MP 块 <b class="mono">9.41 km @ 4:21.8 / HR 160</b></span>
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v18M5 10l7-7 7 7"/></svg>周量 <b class="mono">135.8 km</b>（计划 126）</span>
+    <span class="badge"><svg class="ic" viewBox="0 0 24 24"><path d="M4 14h4l3-9 3 18 3-9h3"/></svg>平均气温 <b class="mono">20.8℃</b>（W14 为 23.3）</span>
+  </div>
+  <nav class="navlinks" aria-label="章节导航">
+    <a href="#s1">1 · 计划 vs 实际</a>
+    <a href="#s2">2 · 周日长跑 ★</a>
+    <a href="#s3">3 · 碎片化回潮</a>
+    <a href="#s4">4 · 周三主课</a>
+    <a href="#s5">5 · 负荷与降温</a>
+    <a href="#s6">6 · W16 判据预演</a>
+    <a href="#s7">7 · 老毛病</a>
+    <a href="#s8">8 · W16 处方</a>
+    <a href="#s9">9 · 结论</a>
+  </nav>
+</header>
+
+<!-- ============ VERDICT ============ -->
+<div class="verdict">
+  <div class="grade-badge">
+    <div class="g">A−</div>
+    <div class="gl">周评级</div>
+    <div class="trend"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14"/></svg>与 W14 同级</div>
+  </div>
+  <div>
+    <div class="vt">同样是 A−，但这一周的 A− 含金量更高——该扣的那一分，扣在了别处</div>
+    <p>
+      W14 交出的是「长跑末段跑进了 MP」，可那 16 km 在数据上是<b>三段拼起来的</b>（3.41 + 2.58 + 4.35 km，
+      中间隔着两次停表）。这一周不一样：9 月 6 日的 33.34 km 里，
+      <span class="hl mono">第 11.0–20.41 km 是一条完全不间断的 9.41 km @ 4:21.8 / 平均心率 160（23℃）</span>，
+      而且是<b>主动跑进去的</b>——不是靠 30 km 之后自然滑下来的配速。
+      长跑内 MP 心率带（155–163）停留从 <span class="mono">44.5</span> 涨到
+      <span class="hl mono">60.0 分钟</span>（+35%），第 10 km 之后的脱钩率
+      <span class="pos mono">+0.1%</span>，几乎为零。
+    </p>
+    <p>
+      更关键的是这个块<b>顺过了 W16 的 go/no-go 判据</b>：块内前 4 km 跑 4:21.8 / HR 157，
+      后 4 km 跑 <span class="hl mono">4:21.0 / HR 162</span>——「后 4 km 不慢于前 4 km」达标，
+      心率也没越过 163 的上限。两周后要考的那道题，这周在只差 6.6 km 里程的条件下答对了一遍。
+    </p>
+    <p>
+      扣分点换了位置：<span class="hlw">长跑停表从 5.3 分钟涨回 16.1 分钟</span>，
+      第 20.41 km 之后被切成 <b>8 段、平均 1.6 km</b>——W14 刚修好的「不停地跑很久」这一条，这周退了回去。
+      加上 <span class="hlw">周六又多跑 7.3 km</span>（计划 v2 第二条原则连续第二周未执行）、
+      <span class="hlw">周量仍超 9.8 km</span>。<b>能力在涨，纪律没跟上。</b>
+    </p>
+  </div>
+</div>
+
+<div class="insight break">
+  <svg class="ic" viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>
+  <div class="it">
+    <b>一句话</b>：整个 v2 计划是围绕一个数字重建的——「长跑内最长<b>不间断</b> MP 段」。
+    这个数字的轨迹是 <b class="mono">W4–W13 十周：3.1 km → 8/30：4.35 km → 9/6：9.41 km</b>。
+    十周涨了 1.2 km，最近两周涨了 6.3 km。W16 要 16 km 连续，W18 要 20 km 连续——
+    <b>以现在的斜率，这两堂课已经从「不可能」进入了「要认真准备」的区间</b>。
+  </div>
+</div>
+
+<!-- ============ STATS ============ -->
+<div class="stats">
+  <div class="stat feature">
+    <div class="top"><svg class="ic" viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>不间断 MP 块</div>
+    <div class="v">9.41<small> km</small></div>
+    <div class="d ok">@4:21.8 / HR 160 · 8/30 为 4.35</div>
+  </div>
+  <div class="stat feature">
+    <div class="top"><svg class="ic" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>长跑 MP 心率带停留</div>
+    <div class="v">60.0<small> min</small></div>
+    <div class="d ok">≈13.6 km · W14 为 44.5</div>
+  </div>
+  <div class="stat feature">
+    <div class="top"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/></svg>长跑脱钩（第 10 km 后）</div>
+    <div class="v">+0.1<small>%</small></div>
+    <div class="d ok">全程 −1.1% · 教科书级</div>
+  </div>
+  <div class="stat miss">
+    <div class="top"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>长跑停表时间</div>
+    <div class="v">16.1<small> min</small></div>
+    <div class="d up">W14 为 5.3 · 被切成 10 段</div>
+  </div>
+  <div class="stat miss">
+    <div class="top"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v18M5 10l7-7 7 7"/></svg>周跑量</div>
+    <div class="v">135.8<small> km</small></div>
+    <div class="d up">计划 126 · 超 +9.8（W14 +21.1）</div>
+  </div>
+  <div class="stat">
+    <div class="top"><svg class="ic" viewBox="0 0 24 24"><path d="M4 14h4l3-9 3 18 3-9h3"/></svg>MP 心率带（全周）</div>
+    <div class="v">82.6<small> min</small></div>
+    <div class="d ok">W14 为 63.0 · +31%</div>
+  </div>
+</div>
+
+<!-- ============ 1 ============ -->
+<section id="s1">
+  <h2><span class="num">1</span>计划 vs 实际</h2>
+  <div class="lead">
+    W15 是比赛期（W15–W19）的第一周，计划量 126 km，周日课表为
+    <span class="mono">34 km = 8 E + 2×7 km @MP（2 km 浮动）+ 5 E</span>，MP 合计 14 km 分段。<br>
+    <b>判读基准</b>：「计划」列是 <span class="mono">data.js</span> 的设计值，<b>仅作参考</b>；
+    与当日实际课表冲突时<b>一律以实际训练数据为准</b>。评价针对<b>训练价值与 10/25 的目标</b>，不是「有没有照抄计划」。
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>日期</th><th>计划 v2（参考）</th><th>实际</th><th>差</th><th>配速</th><th>心率 均/峰</th><th>气温</th><th>判定</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>周一</b> 8/31</td>
+          <td>0 km<br><small>力量（防伤最小集 25 min）</small></td>
+          <td>休息<br><small>无力量记录</small></td>
+          <td class="mono">—</td><td class="mono">—</td><td class="mono">—</td><td class="mono">—</td>
+          <td><span class="pill p-warn">力量未记录</span></td>
+        </tr>
+        <tr>
+          <td><b>周二</b> 9/1</td>
+          <td>24 km<br><small>E 真慢 HR ≤145 + 6×100m strides</small></td>
+          <td>21.43 km<br><small>纯 E · 无 strides 痕迹</small></td>
+          <td class="mono">−2.6</td><td class="mono">5:17.5</td><td class="mono">131 / 140</td><td class="mono">20℃</td>
+          <td><span class="pill p-ok">心率优秀</span> <span class="pill p-warn">缺 strides</span></td>
+        </tr>
+        <tr>
+          <td><b>周三</b> 9/2</td>
+          <td>16 km<br><small>[T] WU 3 + <b>3×3km @ 4:00</b>（jog 3min）+ CD 3</small></td>
+          <td><b>23.50 km</b><br><small>WU 2.5 + 跑操 0.5 + 主课 18.1 + CD 2.4<br><b>6×1650m 递进 + 10×420m 递进</b></small></td>
+          <td class="mono up">+7.5</td><td class="mono">5:00.1</td><td class="mono">145 / <b>177</b></td><td class="mono">19℃</td>
+          <td><span class="pill p-ok">质量优秀</span> <span class="pill p-warn">量 +47%</span></td>
+        </tr>
+        <tr>
+          <td><b>周四</b> 9/3</td>
+          <td>21 km<br><small>E 真·恢复 HR ≤140 / 5:20+</small></td>
+          <td>21.17 km<br><small>E 恢复</small></td>
+          <td class="mono">+0.2</td><td class="mono">5:23.2</td><td class="mono">127 / 144</td><td class="mono">20℃</td>
+          <td><span class="pill p-ok">完美命中</span></td>
+        </tr>
+        <tr>
+          <td><b>周五</b> 9/4</td>
+          <td>15 km<br><small>E + 力量 #2（15 min）</small></td>
+          <td>13.04 km<br><small>E 极轻松 · 无力量记录</small></td>
+          <td class="mono">−2.0</td><td class="mono">5:36.8</td><td class="mono">123 / 138</td><td class="mono">20℃</td>
+          <td><span class="pill p-ok">达标</span></td>
+        </tr>
+        <tr>
+          <td><b>周六</b> 9/5</td>
+          <td>16 km<br><small>★ 纯 E · HR ≤145 / 5:15+ · <b>给周日让路</b></small></td>
+          <td>23.33 km<br><small>E</small></td>
+          <td class="mono up">+7.3</td><td class="mono">5:22.2</td><td class="mono">125 / 144</td><td class="mono">21℃</td>
+          <td><span class="pill p-ok">强度达标</span> <span class="pill p-bad">量 +46%</span></td>
+        </tr>
+        <tr class="hero-row">
+          <td><b>周日</b> 9/6</td>
+          <td>34 km<br><small>8 E + <b>2×7km @ MP</b>（2 km 浮动）+ 5 E<br>MP 合计 14 km</small></td>
+          <td><b>33.34 km</b><br><small>11 E + <b>9.41 @4:21.8</b> + 7.4 浮动 + <b>5.3 @4:11.9</b></small></td>
+          <td class="mono">−0.7</td><td class="mono"><b>4:28.9</b></td><td class="mono">154 / 171</td><td class="mono">25℃</td>
+          <td><span class="pill p-star">★ 阶梯第 2 级达成</span></td>
+        </tr>
+        <tr class="total">
+          <td>合计</td><td class="mono">126 km</td><td class="mono">135.81 km</td>
+          <td class="mono up">+9.8</td><td class="mono">5:06.1</td><td class="mono">—</td><td class="mono">20.8℃</td>
+          <td><span class="pill p-warn">量仍超 7.8%</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cnote">
+    <b>超出的 9.8 km 全部来自两天</b>：周三 +7.5、周六 +7.3，被周二 −2.6 与周五 −2.0 抵掉一部分。
+    而周四 21.17 vs 21、周日 33.34 vs 34——这两天几乎分毫不差，说明<b>他完全有能力按数字执行</b>；
+    问题只出在「感觉还行就多跑一点」的那两天。<br>
+    <b>MP 量的口径说明</b>：课表要的是「2×7 km @MP = 14 km 分段」。实际跑成 <b>9.41 + 5.34 = 14.75 km</b>
+    落在 MP 或更快的配速上——<b>总量达标，结构不同</b>（9+5 而不是 7+7，且第二块比 MP 更快而不是等于 MP）。
+    这个差异在第 2 节展开。
+  </div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section id="s2">
+  <h2><span class="num star">2</span>周日长跑：MP 块从「拼出来」变成「跑出来」</h2>
+  <div class="lead">2026-09-06 · 33.34 km · 净配速 4:28.9 / km · 均 HR 154 / 峰值 171 · 25℃ · 爬升 84 m · 停表 16.1 min · TE 5.0 / 1.1</div>
+
+  <div class="chart-card" style="margin-top:0">
+    <h3>逐公里净配速与心率（绿带 = MP 心率 155–163）</h3>
+    <div class="chart-box"><canvas id="chSun" role="img" aria-label="9月6日长跑逐公里配速与心率折线图，第11至20公里维持4:22左右，末段5公里加速到4:12"></canvas></div>
+  </div>
+
+  <h3>四段式结构：这次是「先跑进去」，不是「自然滑下来」</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>段落</th><th>里程</th><th>距离</th><th>净用时</th><th>配速</th><th>均 HR（峰值）</th><th>气温</th><th>步频 / 步幅 / 触地</th><th>性质</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>① 引入</b></td><td class="mono">0 – 11.0</td><td class="mono">11.00 km</td><td class="mono">51:37</td>
+          <td class="mono">4:41.6</td><td class="mono">145（159）</td><td class="mono">24℃</td>
+          <td class="mono">184 / 1158 / 249</td><td><span class="pill p-info">E 偏快</span></td>
+        </tr>
+        <tr class="hero-row">
+          <td><b>② MP 块</b></td><td class="mono">11.0 – 20.41</td><td class="mono"><b>9.41 km</b></td><td class="mono">41:02</td>
+          <td class="mono"><b>4:21.8</b></td><td class="mono"><b>160</b>（168）</td><td class="mono">23℃</td>
+          <td class="mono">187 / 1222 / 235</td><td><span class="pill p-star">★ 不间断</span></td>
+        </tr>
+        <tr>
+          <td><b>③ 浮动</b></td><td class="mono">20.6 – 28.0</td><td class="mono">7.40 km</td><td class="mono">33:27</td>
+          <td class="mono">4:31.3</td><td class="mono">153（162）</td><td class="mono">26℃</td>
+          <td class="mono">184 / 1198 / 242</td><td><span class="pill p-warn">碎成 4 段</span></td>
+        </tr>
+        <tr>
+          <td><b>④ 收尾</b></td><td class="mono">28.0 – 33.34</td><td class="mono">5.34 km</td><td class="mono">22:24</td>
+          <td class="mono"><b>4:11.9</b></td><td class="mono">162（171）</td><td class="mono">27℃</td>
+          <td class="mono">188 / 1260 / 228</td><td><span class="pill p-warn">快于 MP · 碎成 5 段</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cnote">
+    <b>为什么说「跑进去」比「滑下来」更值钱</b>：8/30 那次，MP 级别的配速要等到第 21 km 之后才出现，
+    是 36.67 km 匀速有氧的<b>自然产物</b>；这次是在第 11 km 主动切进 4:22 并<b>连续保持了 9.41 km</b>。
+    马拉松比赛里没有「跑到 21 km 再开始用比赛配速」这回事——专项段必须能<b>被指令启动</b>。
+    这是本周期第一次做到。
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card" style="margin-top:0">
+      <h3>MP 块内部：后 4 km 比前 4 km 更快</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>子段</th><th>距离</th><th>配速</th><th>均 HR</th><th>峰值 HR</th></tr></thead>
+          <tbody>
+            <tr><td>前 4 km（11.0–15.0）</td><td class="mono">4.00</td><td class="mono">4:21.8</td><td class="mono">157</td><td class="mono">162</td></tr>
+            <tr><td>后 4 km（16.41–20.41）</td><td class="mono">4.00</td><td class="mono"><b>4:21.0</b></td><td class="mono">162</td><td class="mono">168</td></tr>
+            <tr class="total"><td>差</td><td class="mono">—</td><td class="mono pos">−0.8 s/km</td><td class="mono up">+5 bpm</td><td class="mono">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="cnote">
+        W16 的 go/no-go 判据是「<b>后 4 km 不慢于前 4 km</b>」+「22℃ 以上时 HR ≤163」。
+        这个块两条都过了：配速快了 0.8 s/km，块内均 HR 160。
+        心率确实爬了 5 bpm（157→162），但这是 23℃ 下跑 40 分钟的正常热漂移，没有失控。
+      </div>
+    </div>
+    <div class="chart-card" style="margin-top:0">
+      <h3>滚动最佳配速 · 9/6 vs 8/30</h3>
+      <div class="chart-box short"><canvas id="chRoll" role="img" aria-label="滚动最佳配速对比柱状图，9月6日在5公里和21公里窗口均优于8月30日"></canvas></div>
+      <div class="cnote">
+        5 km 窗口快了 <b>6.8 s/km</b>、21.1 km 窗口快了 <b>2.0 s/km</b>，而心率只高 3–6 bpm；
+        15 km 窗口基本持平（4:22.7 vs 4:22.5）。<b>而且 9/6 比 8/30 热 3℃</b>——
+        按气温折算表，25℃ 的 4:22 与 22℃ 的 4:22 不是同一件事。
+      </div>
+    </div>
+  </div>
+
+  <h3>两次长跑的正面对照</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>指标</th><th>8/30（W14）</th><th>9/6（W15）</th><th>变化</th><th>判读</th></tr></thead>
+      <tbody>
+        <tr><td>距离</td><td class="mono">36.67 km</td><td class="mono">33.34 km</td><td class="mono">−3.3</td><td>计划要求下降，符合 v2「不再追距离数字」</td></tr>
+        <tr><td>净均配 / 均 HR</td><td class="mono">4:36.7 / 148</td><td class="mono">4:28.9 / 154</td><td class="mono pos">−7.8 s/km</td><td>更快 + 更高心率 = 更接近专项</td></tr>
+        <tr><td>气温（中位）</td><td class="mono">22℃</td><td class="mono">25℃</td><td class="mono up">+3℃</td><td><b>条件更差</b>，成绩仍更好</td></tr>
+        <tr class="hero-row"><td><b>最长不间断 MP 质量段</b></td><td class="mono">4.35 km @4:23.4</td><td class="mono"><b>9.41 km @4:21.8</b></td><td class="mono pos">×2.2</td><td><span class="pill p-star">★ 本周核心成果</span></td></tr>
+        <tr><td>最长连续 ≤4:20 段<small>（区间均配口径）</small></td><td class="mono">6.7 km</td><td class="mono">9.0 km</td><td class="mono pos">+2.3</td><td>同口径可比</td></tr>
+        <tr><td>最长连续 ≤4:15 段</td><td class="mono">4.1 km</td><td class="mono">6.6 km</td><td class="mono pos">+2.5</td><td>—</td></tr>
+        <tr><td>最长连续 ≤4:08 段</td><td class="mono">2.3 km</td><td class="mono">3.3 km</td><td class="mono pos">+1.0</td><td>真 MP 配速的耐受也在涨</td></tr>
+        <tr><td>MP 心率带 155–163 停留</td><td class="mono">44.5 min / 10.15 km</td><td class="mono">60.0 min / 13.64 km</td><td class="mono pos">+35%</td><td>计划要求 14 km，<b>基本达标</b></td></tr>
+        <tr><td>HR ≥ 155 总时长</td><td class="mono">—</td><td class="mono">78.3 min</td><td class="mono">—</td><td>占长跑净时间 52%</td></tr>
+        <tr><td>脱钩率（全程 / 第 10 km 后）</td><td class="mono">−2.0% / −1.9%</td><td class="mono">−1.1% / <b>+0.1%</b></td><td class="mono pos">改善</td><td>后半程无衰减</td></tr>
+        <tr style="background:#fffcf3"><td><b>停表时间 / 段数</b></td><td class="mono">5.3 min / 5 段</td><td class="mono">16.1 min / <b>10 段</b></td><td class="mono neg">×3.0</td><td><span class="pill p-bad">唯一实质退步</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <h4><svg class="ic" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>跑姿证据：MP 块不是硬撑出来的</h4>
+    <p>
+      同一次跑步内，MP 块（②）相对引入段（①）：步频 <b class="mono">184 → 187</b>、
+      步幅 <b class="mono">1158 → 1222 mm</b>、触地时间 <b class="mono">249 → 235 ms</b>。
+      配速提高 20 s/km 主要靠<b>步幅</b>而不是靠步频硬拉，触地时间反而缩短——
+      这是「有余量地跑快」的特征，不是「拼命维持」的特征。
+      收尾段（④）进一步到 <b class="mono">188 / 1260 / 228</b>，说明 30 km 之后神经肌肉还没掉。
+    </p>
+  </div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section id="s3">
+  <h2><span class="num">3</span>碎片化回潮：这周唯一的实质退步</h2>
+  <div class="lead">
+    W14 报告把「长跑碎片化基本消失（停表 5.3 min）」列为核心成果之一。这一周它退回去了：
+    <b>停表 16.1 min，19 次记录中断，整堂课被切成 10 条连续段</b>。
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card" style="margin-top:0">
+      <h3>连续段长度分布 · 9/6 vs 8/30</h3>
+      <div class="chart-box short"><canvas id="chFrag" role="img" aria-label="连续段长度对比图，8月30日有一条25.58公里长段，9月6日最长10.43公里但后段碎成8条"></canvas></div>
+    </div>
+    <div class="chart-card" style="margin-top:0">
+      <h3>停表位置（≥20 s）</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>里程</th><th>时长</th><th>位置含义</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">9.98 km</td><td class="mono neg">3:43</td><td>MP 块启动<b>前</b>的整备</td></tr>
+            <tr><td class="mono">20.41 km</td><td class="mono">0:57</td><td>MP 块结束</td></tr>
+            <tr><td class="mono">20.60 km</td><td class="mono neg">3:22</td><td>本该是「2 km 浮动慢跑」</td></tr>
+            <tr><td class="mono">22.42 km</td><td class="mono">1:23</td><td>—</td></tr>
+            <tr><td class="mono">27.59 km</td><td class="mono">1:02</td><td>—</td></tr>
+            <tr><td class="mono">29.71 km</td><td class="mono neg">3:15</td><td>收尾提速<b>前</b>的整备</td></tr>
+            <tr><td class="mono">31.72 km</td><td class="mono">0:33</td><td>—</td></tr>
+            <tr class="total"><td>合计（含 &lt;20 s 的 12 次）</td><td class="mono neg">16.1 min</td><td>净运动 2:29:26 / 挂钟 2:45:32</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="cnote">
+    <b>两条结论要分开说，都成立</b>：<br>
+    ✅ <b>专项段本身的完整性大幅提升</b>——8/30 的 MP 级配速是 3 条碎段（3.41 / 2.58 / 4.35 km）拼出来的，
+    最长 4.35 km；9/6 是<b>一条 9.41 km 的整段</b>。就「MP 能连续跑多久」这个决定性指标而言，本周是本周期最好的一次。<br>
+    ⚠️ <b>但整堂课的连续性退步了</b>——8/30 有一条 <b>25.58 km 不间断</b>的主体（虽然大部分是 4:40 的有氧配速），
+    9/6 最长只有 10.43 km，且第 20.41 km 之后被切成 <b>8 段、平均 1.6 km</b>。
+  </div>
+
+  <div class="insight warnband">
+    <svg class="ic" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+    <div class="it">
+      <b>为什么这件事在 W16 会变成问题</b>：3 分 43 秒的站立全休 → 切进 4:22，
+      本质上更接近<b>一堂间歇课</b>，而不是马拉松专项课。9.41 km 的含金量因此要打个折——
+      它是在「近乎新鲜」的状态下启动的。
+      W16 要的是 <b>16 km 连续 @MP</b>，中间不允许出现 3 分钟站立；
+      课表里写的「2 km 浮动」意思是 <b>2 km 慢跑</b>，不是 2 分钟休息。
+      两者对糖原、对腿部刚度、对心率漂移的要求完全不同。
+      <b>W16 唯一需要新增的执行动作，就是把停表从 16 分钟压回 5 分钟以内。</b>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section id="s4">
+  <h2><span class="num">4</span>周三主课：全周期结构最干净的一堂课</h2>
+  <div class="lead">
+    2026-09-02 · 19℃ · 分 4 段记录，合计 23.50 km（热身 2.48 + 跑操 0.45 + 主课 18.13 + 放松 2.44）·
+    主课 18.13 km / 净 1:27:36 / 均 HR 150 / 峰值 177 / TE 4.9 有氧 · 3.2 无氧
+  </div>
+
+  <div class="chart-card" style="margin-top:0">
+    <h3>两组递进：6×1650m（T）+ 10×420m（R）</h3>
+    <div class="chart-box"><canvas id="chWed" role="img" aria-label="周三主课配速柱状图，6组1650米从4:24递进到3:58，10组420米从3:40递进到3:21"></canvas></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card" style="margin-top:0">
+      <h3>Part A · 6×1650m（浮动 430m）</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>#</th><th>配速</th><th>均 HR</th><th>峰值</th><th>步频</th><th>浮动段</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td class="mono">4:24</td><td class="mono">146</td><td class="mono">159</td><td class="mono">184</td><td class="mono">5:39</td></tr>
+            <tr><td>2</td><td class="mono">4:15</td><td class="mono">155</td><td class="mono">164</td><td class="mono">186</td><td class="mono">5:49</td></tr>
+            <tr><td>3</td><td class="mono">4:15</td><td class="mono">155</td><td class="mono">166</td><td class="mono">186</td><td class="mono">5:48</td></tr>
+            <tr><td>4</td><td class="mono">4:11</td><td class="mono">156</td><td class="mono">166</td><td class="mono">188</td><td class="mono">5:55</td></tr>
+            <tr><td>5</td><td class="mono"><b>3:58</b></td><td class="mono">163</td><td class="mono">170</td><td class="mono">190</td><td class="mono">5:58</td></tr>
+            <tr><td>6</td><td class="mono"><b>3:58</b></td><td class="mono">163</td><td class="mono">170</td><td class="mono">190</td><td class="mono">5:46</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="cnote">
+        <b>没有一组快于 3:57</b>——W14 报告里给 W15 的那条指令（「任何一组不得快于 3:57」）被完整执行了。
+        递进梯度干净：4:24 → 4:15 → 4:15 → 4:11 → 3:58 → 3:58，心率 146 → 163 同步爬升，末两组同配速同心率。
+      </div>
+    </div>
+    <div class="chart-card" style="margin-top:0">
+      <h3>Part B · 10×420m（jog 90–120m）</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>#</th><th>配速</th><th>HR</th><th>#</th><th>配速</th><th>HR</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td class="mono">3:40</td><td class="mono">155</td><td>6</td><td class="mono">3:33</td><td class="mono">153</td></tr>
+            <tr><td>2</td><td class="mono">3:36</td><td class="mono">155</td><td>7</td><td class="mono">3:34</td><td class="mono">153</td></tr>
+            <tr><td>3</td><td class="mono">3:36</td><td class="mono">152</td><td>8</td><td class="mono">3:25</td><td class="mono">157</td></tr>
+            <tr><td>4</td><td class="mono">3:41</td><td class="mono">156</td><td>9</td><td class="mono">3:24</td><td class="mono">157</td></tr>
+            <tr><td>5</td><td class="mono">3:31</td><td class="mono">156</td><td>10</td><td class="mono"><b>3:21</b></td><td class="mono">161</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="cnote">
+        配速 R 区（计划 3:25–3:30），但<b>心率只有 152–161</b>，全周 175+ 仅 <b>0.7 min</b>——
+        420m / 90 s 恢复的组合太短，心率来不及爬起来。这是<b>便宜的神经肌肉刺激</b>，
+        不是 W14 周四那种「课表写 4:00 跑成 3:31.5」的失控。步频从 190 一路推到 <b>200</b>。
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <h4><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>与 W13 的同类课对比：同配速，心率低 6 bpm</h4>
+    <p>
+      W13（8/19）的主课是 15.89 km @ 3:57，均 HR <b class="mono">169</b>、峰值 <b class="mono">181</b>。
+      这周 1650m 组跑到 3:58 时，均 HR <b class="mono">163</b>、峰值 <b class="mono">170</b>。
+      <b>同样的配速，心率低了 6 bpm，峰值低了 11 bpm。</b>
+    </p>
+    <p>
+      <b>需要打折的地方</b>：8/19 气温更高，且那是 15.89 km 的连续块，这周是 1650m 分段带浮动恢复——
+      两者不完全可比。但方向是清楚的：<b>T 区已经不再是压力源</b>。
+      计划里「T 已达成，维持即可，不再加码」的判断，本周得到了再一次确认。
+    </p>
+    <p>
+      <b>唯一的账要算在量上</b>：课表写 16 km，实跑 23.5 km（+47%），质量段 14.2 km（课表 9 km）。
+      这一堂课本身没有代价（周日照样跑出全周期最佳 MP 块），但 W16 课表明确写着
+      「<b>刻意减量保护周日</b>」——那一周周三只有 14 km，这个空间不能再被占用。
+    </p>
+  </div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section id="s5">
+  <h2><span class="num">5</span>周内负荷、降温与心率分布</h2>
+  <div class="lead">全部区间按<b>实测最大心率 183</b> 划分（非年龄公式）；时长已扣除停表。</div>
+
+  <div class="grid-2">
+    <div class="chart-card" style="margin-top:0">
+      <h3>W4–W15 周量：计划 vs 实际</h3>
+      <div class="csub">W15 是 12 周里计划外超出最小的一次（+9.8 km），也是第一次把差距压进 10 km 以内。</div>
+      <div class="chart-box short"><canvas id="chVol" role="img" aria-label="W4 到 W15 每周计划与实际跑量对比柱状图，W15 差距最小"></canvas></div>
+    </div>
+    <div class="chart-card" style="margin-top:0">
+      <h3>W15 心率区间分布（共 11.5 h）</h3>
+      <div class="csub">Z4（156–164，即 MP 带）78.2 min，其中 60.0 min 来自周日长跑；Z5b（175+）只有 0.7 min。</div>
+      <div class="chart-box short"><canvas id="chZone" role="img" aria-label="W15 心率区间分布横向柱状图，Z1 占 287 分钟最多，Z5b 175 以上仅 0.7 分钟"></canvas></div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="margin-top:18px">
+    <table>
+      <thead><tr><th>区间</th><th>心率</th><th>W14</th><th>W15</th><th>变化</th><th>主要来源</th></tr></thead>
+      <tbody>
+        <tr><td><b>Z1 恢复</b></td><td class="mono">≤128</td><td class="mono">231.3 min</td><td class="mono">286.6 min</td><td class="mono up">+55.3</td><td>周四 / 周五 / 周六（降温后心率整体下移）</td></tr>
+        <tr><td><b>Z2 有氧</b></td><td class="mono">129–146</td><td class="mono">295.0 min</td><td class="mono">223.8 min</td><td class="mono">−71.2</td><td>周二 / 周三热身 / 长跑引入段</td></tr>
+        <tr><td><b>Z3 节奏</b></td><td class="mono">147–155</td><td class="mono">69.1 min</td><td class="mono">70.3 min</td><td class="mono">+1.2</td><td>长跑浮动段、420m 组</td></tr>
+        <tr class="hero-row"><td><b>Z4 · MP 带</b></td><td class="mono">156–164</td><td class="mono">61.3 min</td><td class="mono"><b>78.2 min</b></td><td class="mono pos">+16.9</td><td><b>长跑 MP 块 + 1650m 末两组</b></td></tr>
+        <tr><td><b>Z5a 阈值</b></td><td class="mono">165–174</td><td class="mono">22.9 min</td><td class="mono">33.0 min</td><td class="mono up">+10.1</td><td>1650m 组 19.4 min + 长跑收尾 14.4 min</td></tr>
+        <tr><td><b>Z5b 最大</b></td><td class="mono">175+</td><td class="mono">6.0 min</td><td class="mono"><b>0.7 min</b></td><td class="mono pos">−5.3</td><td>420m 末组（峰值 177）</td></tr>
+        <tr class="total"><td>合计</td><td class="mono">—</td><td class="mono">685.7 min</td><td class="mono">692.7 min</td><td class="mono">+7.0</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cnote">
+    <b>负荷结构比 W14 更「专项」</b>：MP 带（Z4）+16.9 min，而最高强度区（Z5b）从 6.0 掉到 0.7 min。
+    换句话说，这一周把<b>压力从「接近最大心率」挪到了「比赛心率」</b>——正是比赛期该有的形状。
+    165+ 全周 33.8 min（W14 为 28.9），仍远低于 W13 的 71 min，但那不是问题：
+    强化期已经结束，现在要的是 4:08 的耐受，不是 3:38 的耐受。
+  </div>
+
+  <div class="callout">
+    <h4><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>降温到了：判读标准要开始切换</h4>
+    <p>
+      工作日气温从 W14 的 <b class="mono">21–28℃</b> 降到 W15 的 <b class="mono">19–21℃</b>，
+      周均 23.3℃ → <b class="mono">20.8℃</b>。这是夏训结束的信号。
+    </p>
+    <p>
+      按气温折算表：<b>19–21℃ 对应的 MP 等效配速是 4:12–4:15</b>（26–28℃ 时是 4:21–4:28）。
+      也就是说，<b>从 W16 开始，工作日的课可以重新「看配速」了</b>，不必再只看心率。
+    </p>
+    <p>
+      <b>但周日长跑是例外</b>：9/6 的长跑起跑 05:12，跑到后段太阳升起，
+      气温从 23℃ 一路涨到 <b class="mono">28℃</b>，全程中位 25℃。
+      长跑的判读仍要用「23–25℃ → 4:17–4:22」这一档。
+      <b>这也是为什么 9.41 km @ 4:21.8 是达标而不是勉强——它正好压在等效区间的下沿。</b>
+    </p>
+  </div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section id="s6">
+  <h2><span class="num star">6</span>W16 go/no-go 判据预演：判据已过，里程差 6.6 km</h2>
+  <div class="lead">
+    W16（9/13）的 <b>35 km = 7 E + 16 km 连续 @MP + 12 E</b> 是替代已错过的 W9 半马测试的新 go/no-go 节点。
+    用 9/6 的 MP 块逐条对表：
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>判据</th><th>要求</th><th>9/6 实测（9.41 km 块）</th><th>结果</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>配速 / 心率</b></td>
+          <td>≤4:10，或 22℃+ 时 HR ≤163</td>
+          <td class="mono">23℃ · 4:21.8 · <b>HR 160</b></td>
+          <td><span class="pill p-ok">GO（走心率通道）</span></td>
+        </tr>
+        <tr>
+          <td><b>后段不掉速</b></td>
+          <td>后 4 km 不慢于前 4 km</td>
+          <td class="mono">前 4:21.8 → 后 <b>4:21.0</b></td>
+          <td><span class="pill p-ok">GO（快 0.8 s/km）</span></td>
+        </tr>
+        <tr>
+          <td><b>脱钩</b></td>
+          <td>健康区间 0 ~ −5%</td>
+          <td class="mono">第 10 km 后 <b>+0.1%</b></td>
+          <td><span class="pill p-ok">GO</span></td>
+        </tr>
+        <tr style="background:#fffcf3">
+          <td><b>连续里程</b></td>
+          <td><b>16 km 连续</b></td>
+          <td class="mono">9.41 km</td>
+          <td><span class="pill p-warn">差 6.6 km（59% 完成度）</span></td>
+        </tr>
+        <tr style="background:#fffcf3">
+          <td><b>无中断</b></td>
+          <td>中间只允许慢跑浮动</td>
+          <td class="mono">块前有 <b>3:43</b> 站立全休</td>
+          <td><span class="pill p-bad">块是「新鲜启动」的</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight break">
+    <svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+    <div class="it">
+      <b>怎么读这张表</b>：质量维度（配速、心率、不掉速、脱钩）<b>四项全过</b>，
+      唯一没过的是<b>量</b>——连续里程只有要求的 59%，且启动前休息了近 4 分钟。<br>
+      这比 W14 时的处境好得多：那时四项质量指标里，「后段不掉速」是靠 36 km 渐进跑自然实现的，
+      不是在指定里程主动执行的。<b>现在的问题第一次变成了纯粹的「再撑 6.6 km」，而不是「能不能达到这个强度」。</b>
+    </div>
+  </div>
+
+  <div class="callout">
+    <h4><svg class="ic" viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>换算到比赛日：这块 MP 值多少</h4>
+    <p>
+      9.41 km @ 4:21.8 / HR 160 @ 23℃。按气温折算表，23–25℃ 下 4:08 的等效配速是 4:17–4:22，
+      所以这个块<b>折回 10–14℃ 的比赛日约合 4:08–4:12</b>——正好压在目标配速上。
+    </p>
+    <p>
+      心率 160 的位置同样重要：四场全马的均心率是 160 / 169 / 165 / 164，
+      而这个块的 160 <b>处于历史比赛心率的最低端</b>，距实测最大心率 183 还有 23 bpm 余量。
+      <b>强度是够的，且不是拼出来的。</b>
+    </p>
+    <p>
+      收尾段 5.34 km @ 4:11.9 / HR 162 @ 27℃ 看起来更漂亮（折回比赛日约 3:56–4:00），
+      <b>但必须打折</b>：它前面有一次 3 分 15 秒的站立休息，且只有 5 km。
+      作为「30 km 后还能提速」的证据成立，作为「MP 能力」的证据不成立。
+    </p>
+  </div>
+</section>
+
+<!-- ============ 7 ============ -->
+<section id="s7">
+  <h2><span class="num">7</span>老毛病追踪：一条修好，两条还在，一条反弹</h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>历史问题</th><th>W4–W13</th><th>W14</th><th>W15</th><th>趋势</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>① 长跑内嵌 MP 段</b><br><small>决定成败的一条</small></td>
+          <td class="mono">最长 3.1 km<br>10 周 0 次执行</td>
+          <td class="mono">4.35 km<br>（3 段拼接）</td>
+          <td class="mono pos"><b>9.41 km</b><br>（1 整段）</td>
+          <td><span class="pill p-star">★ 持续修复中</span></td>
+        </tr>
+        <tr>
+          <td><b>② 周量降不下来</b></td>
+          <td class="mono">134.6–139.2<br>计划 100–125</td>
+          <td class="mono">131.1<br>计划 110（+21.1）</td>
+          <td class="mono">135.8<br>计划 126（<b>+9.8</b>）</td>
+          <td><span class="pill p-ok">差距收窄</span> <span class="pill p-warn">绝对量回升</span></td>
+        </tr>
+        <tr>
+          <td><b>③ 周六吃掉周日</b></td>
+          <td class="mono">W12/W13 双长跑<br>64 km / 60 km 周末</td>
+          <td class="mono">22.22 km<br>计划 14（+59%）</td>
+          <td class="mono">23.33 km<br>计划 16（<b>+46%</b>）</td>
+          <td><span class="pill p-bad">连续 2 周未执行</span></td>
+        </tr>
+        <tr>
+          <td><b>④ 该慢的段被跑快</b></td>
+          <td class="mono">普遍</td>
+          <td class="mono">周四 10×400m<br>课表 4:00 → 3:31.5</td>
+          <td class="mono pos">1650m 组<br><b>无一组快于 3:57</b></td>
+          <td><span class="pill p-ok">✓ 已修复</span></td>
+        </tr>
+        <tr>
+          <td><b>⑤ 长跑碎片化</b></td>
+          <td class="mono">单次停表 20–60 min</td>
+          <td class="mono pos">5.3 min / 5 段</td>
+          <td class="mono neg"><b>16.1 min / 10 段</b></td>
+          <td><span class="pill p-bad">反弹</span></td>
+        </tr>
+        <tr>
+          <td><b>⑥ 力量训练无记录</b></td>
+          <td class="mono">10 周 0 次<br>（计划 20 次）</td>
+          <td class="mono">0 次</td>
+          <td class="mono">0 次</td>
+          <td><span class="pill p-warn">仍无记录</span></td>
+        </tr>
+        <tr>
+          <td><b>⑦ strides</b><br><small>W14 起新增</small></td>
+          <td class="mono">—</td>
+          <td class="mono">—</td>
+          <td class="mono">周二最快 100 m 仅 4:52<br>无 strides 痕迹</td>
+          <td><span class="pill p-warn">未执行</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cnote">
+    <b>值得单独表扬的一条</b>：轻松日的心率纪律这一周做到了本周期最好。
+    周二 <b class="mono">131</b> / 周四 <b class="mono">127</b> / 周五 <b class="mono">123</b> / 周六 <b class="mono">125</b>，
+    <b>四天峰值心率全部 ≤144</b>，无一次越过 145 的红线。
+    对比 W14 的周二（137 / 峰值 158），两极化更干净了。
+    在周量 135.8 km 的前提下还能把有氧日压到这个心率，说明有氧基底确实厚。
+  </div>
+
+  <div class="insight warnband">
+    <svg class="ic" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+    <div class="it">
+      <b>③ 必须点名</b>：计划 v2 的三条原则里，第二条写得非常直白——
+      「<b>周六让位给周日，从 22–24 km 降到 14–16 km 纯 E</b>」。
+      两周过去了，周六跑了 22.22 和 23.33 km，一次都没降。<br>
+      这一周没付出代价（周日反而是最佳），但 W16 是 go/no-go，W18 是 20 km 连续 MP 的峰值课。
+      <b>这两周的周六如果还是 23 km，就是在用一堂 E 课去赌一堂决定目标的课。</b>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section id="s8">
+  <h2><span class="num star">8</span>W16 处方（9/7–9/13）：全周期最重要的一周</h2>
+  <div class="lead">
+    计划量 128 km · 周日 <b>35 km = 7 E + 16 km 连续 @MP + 12 E</b> · 全程补给与装备演练 ·
+    这是替代已错过 W9 半马测试的 <b>go/no-go 节点</b>。
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>日</th><th>课表</th><th>本周的具体指令</th></tr></thead>
+      <tbody>
+        <tr><td><b>周一</b> 9/7</td><td class="mono">0 km + 力量 25 min</td><td>防伤最小集。<b>哪怕只做 10 分钟也请记录一次</b>——连续 12 周空白，这是 135 km/周 下的实际敞口</td></tr>
+        <tr><td><b>周二</b> 9/8</td><td class="mono">24 km E + 6×100m strides</td><td>HR ≤145（本周已做到 131，继续）。<b>strides 补上</b>：末段找一段平路，6 次 100 m 加速到 3:20 左右，走回恢复</td></tr>
+        <tr style="background:#fffcf3"><td><b>周三</b> 9/9</td><td class="mono">14 km · [T 轻] 2×15min @4:00</td><td><b>刻意减量护周日</b>。本周跑了 23.5 km，这周<b>必须压到 14–16 km</b>。420m 那组这周<b>不要做</b>——留腿</td></tr>
+        <tr><td><b>周四</b> 9/10</td><td class="mono">22 km E 恢复</td><td>HR ≤140。本周周四做到 127，模板照抄</td></tr>
+        <tr><td><b>周五</b> 9/11</td><td class="mono">17 km E + 力量 15 min</td><td>—</td></tr>
+        <tr style="background:#fffcf3"><td><b>周六</b> 9/12</td><td class="mono">16 km 纯 E</td><td><b>★ 这一条今年只剩两次机会</b>：16 km，不是 23 km。HR ≤145、配速 5:15+。<br>连续两周多跑 7 km 没出事，但 go/no-go 前一天不是试运气的时候</td></tr>
+        <tr class="hero-row"><td><b>周日</b> 9/13</td><td class="mono">35 km = 7 E + <b>16 连续 MP</b> + 12 E</td><td>见下方执行卡</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <h4><svg class="ic" viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>9/13 长跑执行卡</h4>
+    <p>
+      <b>1 · 起跑时间提前到 05:00 以前。</b> 9/6 跑到后段气温从 23℃ 升到 28℃，
+      末段 13 km 全在 26–28℃ 里。16 km 连续 MP 需要 70 分钟，
+      早 15 分钟出门等于把整个专项段留在 23℃ 以内。
+    </p>
+    <p>
+      <b>2 · MP 段从第 7 km 起，一次跑完 16 km，不停表。</b>
+      这是本周唯一真正的新课题。9/6 的块前有 3:43 站立休息，这次不允许——
+      补给在跑动中完成，红绿灯路段提前避开（建议选环线或河堤）。
+      <b>停表目标：全程 ≤5 分钟</b>（8/30 做到过 5.3）。
+    </p>
+    <p>
+      <b>3 · 判读用心率，不用配速。</b> 23–25℃ 时目标是 <b class="mono">HR 155–163</b>，
+      对应配速 4:17–4:22。<b>不要因为凉快了就去追 4:10</b>——
+      9/6 的教训在反面：收尾段跑到 4:11.9 很漂亮，但那是 5 km，不是 16 km。
+      16 km 跑崩比 16 km 跑慢 5 s/km 严重得多。
+    </p>
+    <p>
+      <b>4 · 前 7 km 必须真慢（5:00+ / HR ≤145）。</b>
+      9/6 的引入段跑了 4:41.6 / HR 145——偏快了。
+      那次靠着 11 km 的引入还撑住了，这次只有 7 km 引入却要接 16 km MP，前段每快 10 s/km 都要在后面还。
+    </p>
+    <p>
+      <b>5 · 全套装备与补给演练。</b> 比赛鞋、比赛服、比赛日早餐时间、
+      每 5 km 一次能量胶 + 水。16 km MP 段是唯一能测试「跑着吃」的机会。
+    </p>
+  </div>
+
+  <div class="tbl-wrap" style="margin-top:18px">
+    <table>
+      <thead><tr><th>9/13 结果</th><th>判据</th><th>结论</th><th>后续调整</th></tr></thead>
+      <tbody>
+        <tr style="background:#f3fdf6">
+          <td><b>GO</b></td>
+          <td class="mono">16 km 完成 · HR ≤163（或 ≤4:10）<br>后 4 km 不慢于前 4 km</td>
+          <td>目标锁定 <b>2:54:30</b></td>
+          <td>W18 按原计划 20 km 连续 MP</td>
+        </tr>
+        <tr style="background:#fffcf3">
+          <td><b>调整</b></td>
+          <td class="mono">完成但 HR 165–170<br>或掉速 5–8 s/km</td>
+          <td>目标改 <b>2:56–2:57</b></td>
+          <td>W18 降为 16 km 连续</td>
+        </tr>
+        <tr style="background:#fef2f2">
+          <td><b>改目标</b></td>
+          <td class="mono">HR &gt;170 或撑不到 12 km<br>或掉速 &gt;10 s/km</td>
+          <td>目标改 <b>2:58 破 PB</b></td>
+          <td>MP 调到 4:12，W18 降为 14 km</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cnote">
+    <b>一个提醒</b>：按现在的斜率（4.35 → 9.41 km），16 km 是一次真正的跳跃（+70%）。
+    <b>如果 9/13 只跑到 12–14 km 就掉出心率带，那不算失败</b>——
+    它仍然会是全周期最长的连续 MP 段，判定应走「调整」而不是「改目标」。
+    真正的失败信号只有一个：<b>撑不到 12 km，或心率越过 170</b>。
+  </div>
+</section>
+
+<!-- ============ 9 ============ -->
+<section id="s9">
+  <h2><span class="num">9</span>结论与目标判定</h2>
+
+  <div class="acards">
+    <div class="acard good">
+      <h4><svg class="ic" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>做对了什么</h4>
+      <ul>
+        <li><b>★ 不间断 MP 块 4.35 → 9.41 km（×2.2）</b>，且是<b>主动在第 11 km 切进去</b>的，不是 30 km 后自然滑下来的</li>
+        <li><b>★ 顺过 W16 的四条质量判据</b>：后 4 km 快 0.8 s/km、块内 HR 160（上限 163）、脱钩 +0.1%</li>
+        <li>长跑 MP 心率带停留 44.5 → <b>60.0 min</b>（+35%），全周 63.0 → <b>82.6 min</b>（+31%）</li>
+        <li>比 8/30 <b>热 3℃</b>（25 vs 22℃）的条件下，净均配快 7.8 s/km、滚动最佳 5 km 快 6.8 s/km</li>
+        <li>周三主课结构干净：6×1650m 递进 4:24→3:58 <b>无一组快于 3:57</b>（W14 报告指令被执行）+ 10×420m 递进到 3:21 / 步频 200</li>
+        <li>负荷形状转向比赛期：Z4（MP 带）+16.9 min，而 Z5b（175+）从 6.0 掉到 <b>0.7 min</b></li>
+        <li>轻松日心率本周期最好：<b>四天峰值全部 ≤144</b>，无一次越 145 红线</li>
+        <li>周量超出从 +21.1 收窄到 <b>+9.8 km</b>，12 周里第一次压进 10 km 以内</li>
+        <li>出勤 6/6，连续第 14 周零缺勤</li>
+      </ul>
+    </div>
+    <div class="acard bad">
+      <h4><svg class="ic" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>要改什么</h4>
+      <ul>
+        <li><b>① 长跑碎片化反弹</b>：停表 5.3 → <b>16.1 min</b>，第 20.41 km 后被切成 8 段（平均 1.6 km）。
+            MP 块前的 3:43 站立休息，让 9.41 km 的含金量要打折</li>
+        <li><b>② 周六连续第 2 周不减</b>：23.33 vs 计划 16（+46%）。v2 三原则的第二条两周零执行</li>
+        <li><b>③ 周三量 +47%</b>（23.5 vs 16）。这周没代价，但 W16 课表写着「刻意减量护周日」，
+            那 14 km 的空间不能再占</li>
+        <li><b>④ 结构没按 2×7 执行</b>：跑成 9.41 @4:21.8 + 8 km @4:31（掉出 MP）+ 5.34 @4:11.9（快于 MP）。
+            「把配速<b>锁死在 MP</b> 跑很久」的能力仍未验证</li>
+        <li>⑤ 力量训练连续 12 周无记录；周二 strides 未执行</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="verdict" style="margin-top:26px">
+    <div class="grade-badge">
+      <div class="g">A−</div>
+      <div class="gl">W15 评级</div>
+      <div class="trend"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14"/></svg>与 W14 同级</div>
+    </div>
+    <div>
+      <div class="vt">为什么是 A− 而不是 A</div>
+      <p>
+        <b>该给 A 的理由很硬</b>：整个 v2 计划是围绕「长跑内最长连续 MP 段」这一个数字重建的，
+        这一周把它从 4.35 推到 9.41 km，同时脱钩归零、心率纪律最好、超量减半、并且是在更热的条件下做到的。
+        单看训练价值，这是 W4 以来最有含金量的一周。
+      </p>
+      <p>
+        <b>扣掉的那一分在这里</b>：W14 报告把「碎片化基本消失」写成核心成果，这周它退回去了——
+        16.1 分钟停表、10 条连续段，而且 3 分 43 秒的站立全休就发生在 MP 块启动之前。
+        <span class="hlw">一堂「停下来再跑一段快的」的课，物理上更接近间歇训练，而不是马拉松专项课。</span>
+        加上周六连续两周不减量，v2 三条原则里有一条从未落地。
+        <b>把停表压回 5 分钟、周六跑 16 km，这周就是 A。</b>
+      </p>
+      <div class="vt" style="margin-top:20px">目标判定：维持 2:54–2:56，但风险构成变了</div>
+      <p>
+        8/23 的结论是「若 MP 阶梯落地则 2:54–2:56」，W14 把「若」变成了「已」，
+        <b>W15 则把它从「做到过一次」变成了「能被指令启动」</b>。
+        9.41 km @ 4:21.8 / HR 160 @ 23℃ 折回比赛日 10–14℃ 约合 <b class="mono">4:08–4:12</b>，
+        心率 160 处于四场全马（160/169/165/164）的最低端，距实测最大 183 还有 23 bpm 余量。
+        <b>目标配速的强度已经不是问题。</b>
+      </p>
+      <p>
+        <b>剩下的全部风险集中在一个词：持续时间。</b>
+        现在能连续跑 MP 的最长距离是 9.41 km，比赛要跑 42.195 km。
+        W16（16 km）、W18（20 km）、W19（14 km）三堂课就是这个缺口的全部填补机会。
+        <span class="hlw">如果 W16 能在不停表的前提下跑完 16 km 连续 MP，2:54:30 就从「射程内」变成「大概率」；
+        如果继续用「站着歇 3 分钟再跑一段」的方式做专项课，最可能的结局是又一次 2:57–2:59。</span>
+      </p>
+      <p>
+        接下来 7 天要做的事只有三件：<b>周三压到 14 km、周六压到 16 km、周日不停表跑完 16 km MP。</b>
+        前两件是纪律问题，第三件才是能力问题——而能力这一项，这周已经给出了肯定的预演。
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <b>数据来源</b>：<span class="mono">Activities/9月1日-9月6日/</span> 下 9 个 FIT 文件（Garmin，1 Hz 记录），
+  以 <span class="mono">fitparse 1.2.0</span> 逐点解析；对照组为 <span class="mono">Activities/8月25日-8月30日/</span> 的 6 个文件（W14）。<br>
+  <b>计算口径</b>：与 W14 周报完全一致，并已用 W14 已发布数字反向验证通过
+  （8/30 停表 5.3 min、MP 带 44.5 min / 10.15 km、末段 16 km @4:22.6 / HR 157、
+  最长连续段 2.3 / 4.1 / 6.8 / 26.5 km、全周 165+ 28.9 min、175+ 6.0 min 均可复现）。
+  所有配速、区段与心率时长均<b>基于净运动时间</b>（相邻记录点间隔 &gt;2.5 s 判定为停表并剔除）；
+  「最长连续 ≤X 配速段」= 100 m 重采样后<b>区间平均配速</b>满足阈值的最长连续块；
+  「<b>最长不间断 MP 质量段</b>」为本报告新增口径 = 两次停表之间、且区间均配 ≤4:28 的最长整段（更严格，用于衡量专项连续性）。
+  脱钩率 = 后半程（速度 ÷ 心率）÷ 前半程 − 1；心率区间按<b>实测最大心率 183</b> 划分。
+  气温取记录点中位数（腕表传感器，起跑前若干分钟未平衡的读数已被中位数抵消），折算表为含湿度影响的经验区间，仅供判读参考。<br>
+  <b>判读基准</b>：<b>以实际训练数据为准</b>。<span class="mono">data.js</span> 的 <span class="mono">WEEKS[]</span>
+  为计划 v2 的设计值，供参考对照；当它与跑者当日课表或 FIT 记录冲突时，以后者为准，不据此判定「未执行」。
+  本周即出现一例：周三实跑的 6×1650m + 10×420m 是当日课表，而 <span class="mono">WEEKS[14].wednesday</span> 写的是 3×3km @4:00。<br>
+  <b>报告生成</b>：2026-09-06 · 计划 W15（ISO 第 36 周）· <a href="index.html">返回训练计划主页</a> ·
+  <a href="W14-训练分析报告.html">W14 周报</a> ·
+  <a href="W4-W13-十周阶段复盘.html">W4–W13 十周阶段复盘</a>
+</footer>
+
+</div>
+
+<script>
+const C={primary:'#1e40af',primary2:'#3b82f6',amber:'#f59e0b',good:'#16a34a',bad:'#dc2626',
+         violet:'#7c3aed',cyan:'#06b6d4',muted:'#64748b'};
+const GRID='#e2e8f0';
+Chart.defaults.font.family="'Fira Sans','PingFang SC','Microsoft YaHei',sans-serif";
+Chart.defaults.font.size=12;
+Chart.defaults.color='#475569';
+const paceLabel=s=>{const m=Math.floor(s/60);const q=Math.round(s%60);return m+':'+String(q).padStart(2,'0')};
+
+/* ---------- 1. Sunday long run ---------- */
+const sunPace=[297.8,283.4,280.6,280.0,280.5,281.5,274.3,274.8,271.7,290.4,283.1,264.4,259.4,264.3,258.8,264.5,262.2,263.3,260.3,258.1,270.1,271.0,269.9,270.5,270.8,275.3,272.0,268.0,256.5,257.8,248.1,243.4,252.2,256.4];
+const sunHR=[134,139,143,146,147,147,152,152,154,149,138,152,158,157,159,160,161,161,163,165,149,153,153,156,156,153,156,151,161,153,163,164,167,168];
+
+const mpBandPlugin={id:'mpBand',beforeDatasetsDraw(c){
+  const {ctx,chartArea:{left,right},scales:{y}}=c;
+  const yTop=y.getPixelForValue(257), yBot=y.getPixelForValue(262);
+  ctx.save();
+  ctx.fillStyle='rgba(22,163,74,.13)';
+  ctx.fillRect(left,Math.min(yTop,yBot),right-left,Math.abs(yBot-yTop));
+  ctx.strokeStyle='rgba(22,163,74,.55)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(left,yTop);ctx.lineTo(right,yTop);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(left,yBot);ctx.lineTo(right,yBot);ctx.stroke();
+  ctx.restore();
+}};
+const blockPlugin={id:'blk',beforeDatasetsDraw(c){
+  const {ctx,chartArea:{top,bottom},scales:{x}}=c;
+  ctx.save();
+  ctx.fillStyle='rgba(30,64,175,.07)';
+  const a=x.getPixelForValue(11), b=x.getPixelForValue(19);
+  ctx.fillRect(a,top,b-a,bottom-top);
+  ctx.restore();
+}};
+new Chart(document.getElementById('chSun'),{
+  type:'line',
+  data:{labels:sunPace.map((_,i)=>i===33?'33.34':String(i+1)),
+    datasets:[
+      {label:'配速 (s/km)',data:sunPace,borderColor:C.primary,backgroundColor:'rgba(30,64,175,.08)',
+       tension:.3,pointRadius:2.5,pointHoverRadius:5,borderWidth:2.2,yAxisID:'y',fill:true},
+      {label:'心率 (bpm)',data:sunHR,borderColor:C.bad,backgroundColor:'transparent',
+       tension:.3,pointRadius:0,pointHoverRadius:4,borderWidth:1.8,borderDash:[5,3],yAxisID:'y1'}
+    ]},
+  plugins:[mpBandPlugin,blockPlugin],
+  options:{maintainAspectRatio:false,responsive:true,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{labels:{boxWidth:14,usePointStyle:true}},
+      tooltip:{callbacks:{label:c=>c.datasetIndex===0?'配速 '+paceLabel(c.parsed.y)+'/km':'心率 '+c.parsed.y+' bpm',
+        title:c=>'第 '+c[0].label+' km'}}},
+    scales:{
+      y:{reverse:true,grid:{color:GRID},border:{display:false},
+         title:{display:true,text:'配速 (慢 → 快)'},
+         ticks:{callback:v=>paceLabel(v)},min:235,max:305},
+      y1:{position:'right',grid:{display:false},border:{display:false},
+          title:{display:true,text:'心率 bpm'},min:125,max:180},
+      x:{grid:{display:false},border:{color:'#cbd5e1'},title:{display:true,text:'公里'}}}}
+});
+
+/* ---------- 2. rolling best ---------- */
+new Chart(document.getElementById('chRoll'),{
+  type:'bar',
+  data:{labels:['5 km','10 km','15 km','21.1 km'],
+    datasets:[
+      {label:'8/30 (W14)',data:[257.8,262.0,262.5,264.5],backgroundColor:'#cbd5e1',borderRadius:5},
+      {label:'9/6 (W15)',data:[251.0,261.0,262.7,262.5],backgroundColor:C.good,borderRadius:5}
+    ]},
+  options:{maintainAspectRatio:false,responsive:true,
+    plugins:{legend:{labels:{boxWidth:14,usePointStyle:true}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+' — '+paceLabel(c.parsed.y)+'/km'}}},
+    scales:{y:{reverse:true,min:240,max:275,grid:{color:GRID},border:{display:false},
+      title:{display:true,text:'滚动最佳配速'},ticks:{callback:v=>paceLabel(v)}},
+      x:{grid:{display:false},border:{color:'#cbd5e1'}}}}
+});
+
+/* ---------- 3. fragmentation ---------- */
+new Chart(document.getElementById('chFrag'),{
+  type:'bar',
+  data:{labels:['第1段','第2段','第3段','第4段','第5段','第6段','第7段','第8段','第9段','第10段'],
+    datasets:[
+      {label:'8/30 (W14) 共 5 段',data:[0.67,25.58,3.41,2.58,4.35,null,null,null,null,null],
+       backgroundColor:'#cbd5e1',borderRadius:5},
+      {label:'9/6 (W15) 共 10 段',data:[9.97,10.43,1.82,4.67,0.49,1.52,0.60,2.01,0.41,1.20],
+       backgroundColor:C.amber,borderRadius:5}
+    ]},
+  options:{maintainAspectRatio:false,responsive:true,
+    plugins:{legend:{labels:{boxWidth:14,usePointStyle:true}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+' — '+c.parsed.y+' km'}}},
+    scales:{y:{beginAtZero:true,grid:{color:GRID},border:{display:false},title:{display:true,text:'连续段长度 (km)'}},
+      x:{grid:{display:false},border:{color:'#cbd5e1'}}}}
+});
+
+/* ---------- 4. Wednesday ---------- */
+new Chart(document.getElementById('chWed'),{
+  type:'bar',
+  data:{labels:['1650m #1','#2','#3','#4','#5','#6','420m #1','#2','#3','#4','#5','#6','#7','#8','#9','#10'],
+    datasets:[
+      {type:'bar',label:'配速 (s/km)',
+       data:[263.9,255.0,254.7,250.8,237.7,238.2,219.9,216.1,216.1,221.4,211.0,213.0,214.3,205.4,204.1,200.8],
+       backgroundColor:[C.primary2,C.primary2,C.primary2,C.primary2,C.primary,C.primary,
+                        C.violet,C.violet,C.violet,C.violet,C.violet,C.violet,C.violet,C.violet,C.violet,C.violet],
+       borderRadius:5,yAxisID:'y'},
+      {type:'line',label:'心率 (bpm)',
+       data:[146,155,155,156,163,163,155,155,152,156,156,153,153,157,157,161],
+       borderColor:C.bad,backgroundColor:'transparent',tension:.3,pointRadius:2.5,borderWidth:1.8,yAxisID:'y1'}
+    ]},
+  options:{maintainAspectRatio:false,responsive:true,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{labels:{boxWidth:14,usePointStyle:true}},
+      tooltip:{callbacks:{label:c=>c.datasetIndex===0?'配速 '+paceLabel(c.parsed.y)+'/km':'心率 '+c.parsed.y+' bpm'}}},
+    scales:{y:{reverse:true,min:195,max:275,grid:{color:GRID},border:{display:false},
+      title:{display:true,text:'配速'},ticks:{callback:v=>paceLabel(v)}},
+      y1:{position:'right',grid:{display:false},border:{display:false},min:140,max:175,title:{display:true,text:'心率'}},
+      x:{grid:{display:false},border:{color:'#cbd5e1'}}}}
+});
+
+/* ---------- 5. weekly volume ---------- */
+new Chart(document.getElementById('chVol'),{
+  type:'bar',
+  data:{labels:['W4','W5','W6','W7','W8','W9','W10','W11','W12','W13','W14','W15'],
+    datasets:[
+      {label:'计划',data:[100,125,125,125,125,105,100,125,125,125,110,126],backgroundColor:'#cbd5e1',borderRadius:5},
+      {label:'实际',data:[134.6,135.2,136.0,135.9,135.7,135.9,135.7,136.4,139.2,137.2,131.1,135.8],
+       backgroundColor:['#fcd34d','#93c5fd','#93c5fd','#93c5fd','#93c5fd','#fcd34d','#fcd34d','#93c5fd','#93c5fd','#93c5fd','#fcd34d',C.good],
+       borderRadius:5}
+    ]},
+  options:{maintainAspectRatio:false,responsive:true,
+    plugins:{legend:{labels:{boxWidth:14,usePointStyle:true}},
+      tooltip:{callbacks:{afterBody:c=>{const i=c[0].dataIndex;
+        const p=[100,125,125,125,125,105,100,125,125,125,110,126][i];
+        const a=[134.6,135.2,136.0,135.9,135.7,135.9,135.7,136.4,139.2,137.2,131.1,135.8][i];
+        return '差 '+(a-p>0?'+':'')+(a-p).toFixed(1)+' km';}}}},
+    scales:{y:{beginAtZero:true,grid:{color:GRID},border:{display:false},title:{display:true,text:'km'}},
+      x:{grid:{display:false},border:{color:'#cbd5e1'}}}}
+});
+
+/* ---------- 6. HR zones ---------- */
+new Chart(document.getElementById('chZone'),{
+  type:'bar',
+  data:{labels:['Z1 ≤128','Z2 129–146','Z3 147–155','Z4 156–164','Z5a 165–174','Z5b 175+'],
+    datasets:[
+      {label:'W14 (min)',data:[231.3,295.0,69.1,61.3,22.9,6.0],backgroundColor:'#cbd5e1',borderRadius:5},
+      {label:'W15 (min)',data:[286.6,223.8,70.3,78.2,33.0,0.7],
+       backgroundColor:['#94a3b8','#93c5fd',C.cyan,C.good,C.amber,C.bad],borderRadius:5}
+    ]},
+  options:{indexAxis:'y',maintainAspectRatio:false,responsive:true,
+    plugins:{legend:{labels:{boxWidth:14,usePointStyle:true}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+' — '+c.parsed.x.toFixed(1)+' min'}}},
+    scales:{x:{grid:{color:GRID},border:{display:false},title:{display:true,text:'分钟'},beginAtZero:true},
+            y:{grid:{display:false},border:{color:'#cbd5e1'}}}}
+});
+</script>
+</body>
+</html>
